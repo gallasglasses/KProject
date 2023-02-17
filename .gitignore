@@ -72,3 +72,20 @@ SourceArt/**/*.tga
 
 # Cache files for the editor to use
 */DerivedDataCache/*
+
+KProject/AncientTreasures.png
+
+*/Content/AncientTreasures/*
+*/Content/AnimalFarm/*
+*/Content/AnimalVarietyPack/*
+*/Content/DungeonLamps/*
+*/Content/FarmAnimalSounds/*
+*/Content/InfinityBladeIceLands/*
+*/Content/Medieval_Environment/*
+*/Content/ParagonGreystone/*
+*/Content/ParagonMorigesh/*
+*/Content/ROG_Modular_Armor/*
+*/Content/Weapon_Pack/*
+*/Content/Windmills/*
+*/Content/WinterForest/*
+
