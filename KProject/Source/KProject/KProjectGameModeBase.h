@@ -13,5 +13,8 @@ UCLASS()
 class KPROJECT_API AKProjectGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+	public:
+		AKProjectGameModeBase();
 	
 };

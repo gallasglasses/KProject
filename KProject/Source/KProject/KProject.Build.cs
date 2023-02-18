@@ -12,6 +12,13 @@ public class KProject : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
+		PublicIncludePaths.AddRange(new string[] 
+		{ 
+		"KProject/Public/Player",
+        "KProject/Public/Components",
+        "KProject/Public/Damaging"
+        });
+
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
