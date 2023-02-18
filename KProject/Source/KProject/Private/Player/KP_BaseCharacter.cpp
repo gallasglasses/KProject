@@ -6,6 +6,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -21,6 +22,10 @@ AKP_BaseCharacter::AKP_BaseCharacter(const FObjectInitializer& ObjInit)
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->bInheritRoll = false;
+	/*SpringArmComponent->TargetArmLength = 400.0f;
+	SpringArmComponent->SocketOffset = FVector(0.0f, 100.0f, 100.0f);
+	SpringArmComponent->SetRelativeRotation(FRotator(0.0f, -15.0f, 0.0f));*/
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent-> SetupAttachment(SpringArmComponent);
@@ -56,6 +61,7 @@ void AKP_BaseCharacter::Tick(float DeltaTime)
 void AKP_BaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	check(PlayerInputComponent);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AKP_BaseCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AKP_BaseCharacter::MoveRight);
@@ -87,7 +93,7 @@ float AKP_BaseCharacter::GetMovementDirection() const
 
 void AKP_BaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
-	const auto FallVelocityZ = -GetCharacterMovement()->Velocity.Z;
+	const auto FallVelocityZ = -GetVelocity().Z;
 
 	UE_LOG(BaseCharacterLog, Display, TEXT("On Ground Landed %f"), FallVelocityZ);
 
@@ -141,6 +147,7 @@ void AKP_BaseCharacter::OnDeath()
 	{
 		Controller->ChangeState(NAME_Spectating);
 	}
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 }
 
 void AKP_BaseCharacter::OnHealthChanged(float Health)

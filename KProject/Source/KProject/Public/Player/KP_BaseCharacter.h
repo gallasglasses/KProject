@@ -40,10 +40,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	UAnimMontage* LevelStartAnimMontage;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamageVelocity = FVector2D(1000.f, 2000.f);
 
-	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamage = FVector2D(10.f, 100.f);
 	
 	virtual void BeginPlay() override;
@@ -61,8 +61,7 @@ public:
 
 private:
 
-	UFUNCTION()
-	void OnGroundLanded(const FHitResult& Hit);
+	bool bWantsToRun = false;
 
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
@@ -73,7 +72,7 @@ private:
 	void OnDeath();
 	void OnHealthChanged(float Health);
 
-	bool bWantsToRun = false;
+	UFUNCTION()
+	void OnGroundLanded(const FHitResult& Hit);
 
-	
 };
