@@ -8,7 +8,15 @@ public class KProject : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
+		PublicDependencyModuleNames.AddRange(new string[] 
+		{ 
+			"Core",
+            "CoreUObject",
+            "Engine",
+            "InputCore",
+            "SlateCore",
+            "Slate" 
+		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -16,7 +24,9 @@ public class KProject : ModuleRules
 		{ 
 		"KProject/Public/Player",
         "KProject/Public/Components",
-        "KProject/Public/Damaging"
+        "KProject/Public/Damaging",
+        "KProject/Public/UI",
+        "KProject/Public/Pickups"
         });
 
 		// Uncomment if you are using Slate UI

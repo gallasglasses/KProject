@@ -6,12 +6,19 @@
 #include "GameFramework/Character.h"
 #include "KP_BaseCharacter.generated.h"
 
-class UCameraComponent;
 class UKP_HealthComponent;
-class USpringArmComponent;
+class UKP_StaminaComponent;
+class UKP_ManaComponent;
 class UAnimMontage;
+class UBoxComponent;
+class UCameraComponent;
+class USpringArmComponent;
 
 class UTextRenderComponent;
+class UWidgetComponent;
+
+DECLARE_MULTICAST_DELEGATE(FOnGiveAnyStaminaSignature);
+DECLARE_MULTICAST_DELEGATE(FOnGiveAnyManaSignature);
 
 UCLASS()
 class KPROJECT_API AKP_BaseCharacter : public ACharacter
@@ -32,13 +39,31 @@ protected:
 	UKP_HealthComponent* HealthComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UKP_StaminaComponent* StaminaComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UKP_ManaComponent* ManaComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UBoxComponent* SwordTriggerHitComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UTextRenderComponent* HealthTextComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UWidgetComponent* HealthWidgetComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	UAnimMontage* DeathAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	UAnimMontage* LevelStartAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animations")
+	TArray<UAnimMontage*> AttackAnimMontages;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animations")
+	TArray<UAnimMontage*> RecoveryAnimMontages;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamageVelocity = FVector2D(1000.f, 2000.f);
@@ -57,22 +82,57 @@ public:
 	bool IsRunning() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool IsAttacking() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+	float WeaponDamageAmount = 10.0f;
+
+	FOnGiveAnyStaminaSignature OnGiveAnyStamina;
+	FOnGiveAnyManaSignature OnGiveAnyMana;
+
 private:
+	
+	FTimerHandle AttackTimerHandle;
+
+	int8 ComboAttackCount = 0;
+	int8 RecoveryCount = 0;
+
+	float TimeAnimMontage = 0.0f;
 
 	bool bWantsToRun = false;
+	bool bIsRunning = false;
+	bool bIsAttacking = false;
+	bool bIsDamageDone = false;
+	bool bIsComboAttack = false;
 
+	void Block();
+	void ChooseComboAnimMontage();
+	void ComboAttackSave();
+	void ResetCombo();
+	void OnDeath();
+	void OnExhausted();
+	void OnMuggle();
+	void OnHealthChanged(float Health, float HealthDelta);
+	//void OnStaminaChanged(float Stamina, float StaminaDelta);
+	void OnPlayAnimMontage(int8 Count);
+	void OnStartAttacking();
+	void OnStartRunning();
+	void OnStopAttacking();
+	void OnStopRunning();
+	void MakeDamage(const FHitResult& HitResult);
+	void MeleeAttack();
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
-	void OnStartRunning();
-	void OnStopRunning();
-	void Fight();
-	void Block();
-	void OnDeath();
-	void OnHealthChanged(float Health);
+
+	APlayerController* GetPlayerController() const;
 
 	UFUNCTION()
 	void OnGroundLanded(const FHitResult& Hit);
+
+	UFUNCTION()
+	void OnOverlapHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 };

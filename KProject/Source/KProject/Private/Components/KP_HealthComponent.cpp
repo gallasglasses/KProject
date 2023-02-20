@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Components/KP_HealthComponent.h"
 //#include "Damaging/KP_IceDamageType.h"
 //#include "Damaging/KP_FireDamageType.h"
@@ -14,13 +13,14 @@ DEFINE_LOG_CATEGORY_STATIC(HealthComponentLog, All, All);
 UKP_HealthComponent::UKP_HealthComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
 }
 
 void UKP_HealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	check(MaxHealth > 0);
+
 	SetHealth(MaxHealth);
 
 	AActor* ComponentOwner = GetOwner();
@@ -74,6 +74,25 @@ void UKP_HealthComponent::HealUpdate()
 
 void UKP_HealthComponent::SetHealth(float NewHealth)
 {
-	Health = FMath::Clamp(NewHealth, 0.f, MaxHealth);
-	OnHealthChanged.Broadcast(Health);
+	const auto NextHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+	const auto HealthDelta = NextHealth - Health;
+
+	UE_LOG(HealthComponentLog, Display, TEXT("Delta %f Health %f NextHealth %f"), HealthDelta, Health, NextHealth);
+	Health = NextHealth;
+	OnHealthChanged.Broadcast(Health, HealthDelta);
+}
+
+bool UKP_HealthComponent::TryToAddHealth(float HealthAmount)
+{
+	if (IsDead() || IsHealthFull())
+	{
+		return false;
+	}
+	SetHealth(Health + HealthAmount);
+	return true;
+}
+
+bool UKP_HealthComponent::IsHealthFull() const
+{
+	return FMath::IsNearlyEqual(Health, MaxHealth);
 }
