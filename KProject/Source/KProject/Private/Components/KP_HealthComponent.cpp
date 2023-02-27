@@ -1,8 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Components/KP_HealthComponent.h"
+#include "Components/KP_CharacterAbilitiesComponent.h"
+#include "Player/KP_BaseCharacter.h"
+#include "Abilities/KP_Shield.h"
 //#include "Damaging/KP_IceDamageType.h"
 //#include "Damaging/KP_FireDamageType.h"
+#include "KP_Utils.h"
 
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
@@ -34,6 +38,17 @@ void UKP_HealthComponent::BeginPlay()
 void UKP_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	if(Damage <=0.f || IsDead() || !GetWorld()) return;
+	const auto CharacterDamaged = Cast<AKP_BaseCharacter>(DamagedActor);
+	if(!CharacterDamaged) return;
+	if (CharacterDamaged->IsBlocking())
+	{
+		const auto AbilitiesComponent = KP_Utils::GetPlayerComponent<UKP_CharacterAbilitiesComponent>(CharacterDamaged);
+		if (!AbilitiesComponent) return;
+
+		const auto Shield = Cast<AKP_Shield>(AbilitiesComponent->GetShield());
+		if (!Shield) return;
+		Damage = Damage * Shield->GetTransmittedDamagePercent();
+	}
 
 	UE_LOG(HealthComponentLog, Display, TEXT("Damage: %f"), Damage);
 	SetHealth(Health - Damage);

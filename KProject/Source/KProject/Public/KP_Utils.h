@@ -4,7 +4,7 @@ class KP_Utils
 {
 public:
 	template<typename T>
-	static T* GetPlayerComponent(APawn* PlayerPawn)
+	static T* GetPlayerComponent(AActor* PlayerPawn)
 	{
 		if (!PlayerPawn)
 		{

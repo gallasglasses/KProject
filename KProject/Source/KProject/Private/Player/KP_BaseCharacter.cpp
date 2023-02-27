@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Player/KP_BaseCharacter.h"
+#include "Components/KP_CharacterAbilitiesComponent.h"
 #include "Components/KP_CharacterMovementComponent.h"
 #include "Components/KP_HealthComponent.h"
 #include "Components/KP_StaminaComponent.h"
@@ -39,6 +40,7 @@ AKP_BaseCharacter::AKP_BaseCharacter(const FObjectInitializer& ObjInit)
 	HealthComponent = CreateDefaultSubobject<UKP_HealthComponent>("HealthComponent");
 	StaminaComponent = CreateDefaultSubobject<UKP_StaminaComponent>("StaminaComponent");
 	ManaComponent = CreateDefaultSubobject<UKP_ManaComponent>("ManaComponent");
+	AbilitiesComponent = CreateDefaultSubobject<UKP_CharacterAbilitiesComponent>("AbilitiesComponent");
 
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
 	HealthTextComponent->SetupAttachment(GetRootComponent()); 
@@ -67,6 +69,7 @@ void AKP_BaseCharacter::BeginPlay()
 	check(HealthComponent);
 	check(StaminaComponent);
 	check(ManaComponent);
+	check(AbilitiesComponent);
 	check(HealthTextComponent);
 	check(HealthWidgetComponent)
 	check(GetCharacterMovement());
@@ -117,6 +120,11 @@ bool AKP_BaseCharacter::IsAttacking() const
 	return bIsAttacking;
 }
 
+bool AKP_BaseCharacter::IsBlocking() const
+{
+	return bIsBlocking;
+}
+
 float AKP_BaseCharacter::GetMovementDirection() const
 {
 	if (GetVelocity().IsZero()) return 0.0f;
@@ -126,6 +134,11 @@ float AKP_BaseCharacter::GetMovementDirection() const
 	const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
 
 	return FMath::RadiansToDegrees(AngleBetween) * FMath::Sign(CrossProduct.Z);
+}
+
+void AKP_BaseCharacter::SetBlockingState(bool BlockingState)
+{
+	bIsBlocking = BlockingState;
 }
 
 void AKP_BaseCharacter::OnGroundLanded(const FHitResult& Hit)
@@ -189,7 +202,19 @@ void AKP_BaseCharacter::OnStopRunning()
 
 void AKP_BaseCharacter::Block()
 {
-	OnGiveAnyMana.Broadcast();
+	if (bIsBlocking)
+	{
+		UE_LOG(BaseCharacterLog, Display, TEXT("Shield is working!"));
+	}
+	else
+	{
+		SetBlockingState(true);
+		OnGiveAnyMana.Broadcast();
+		PlayAnimMontage(BlockAnimMontage);
+
+		AbilitiesComponent->SpawnAbility();
+	}
+
 }
 
 void AKP_BaseCharacter::OnDeath()

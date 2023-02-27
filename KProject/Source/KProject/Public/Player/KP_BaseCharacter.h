@@ -6,9 +6,12 @@
 #include "GameFramework/Character.h"
 #include "KP_BaseCharacter.generated.h"
 
+class UKP_CharacterAbilitiesComponent;
 class UKP_HealthComponent;
 class UKP_StaminaComponent;
 class UKP_ManaComponent;
+class AKP_Shield;
+
 class UAnimMontage;
 class UBoxComponent;
 class UCameraComponent;
@@ -48,6 +51,9 @@ protected:
 	UBoxComponent* SwordTriggerHitComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UKP_CharacterAbilitiesComponent* AbilitiesComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UTextRenderComponent* HealthTextComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -60,10 +66,16 @@ protected:
 	UAnimMontage* LevelStartAnimMontage;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
+	UAnimMontage* BlockAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	TArray<UAnimMontage*> AttackAnimMontages;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	TArray<UAnimMontage*> RecoveryAnimMontages;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+	TSubclassOf<AKP_Shield> ShieldClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamageVelocity = FVector2D(1000.f, 2000.f);
@@ -85,10 +97,15 @@ public:
 	bool IsAttacking() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
+	bool IsBlocking() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
-	float WeaponDamageAmount = 10.0f;
+	float WeaponDamageAmount = 20.0f;
+
+	void SetBlockingState(bool BlockingState);
 
 	FOnGiveAnyStaminaSignature OnGiveAnyStamina;
 	FOnGiveAnyManaSignature OnGiveAnyMana;
@@ -107,6 +124,7 @@ private:
 	bool bIsAttacking = false;
 	bool bIsDamageDone = false;
 	bool bIsComboAttack = false;
+	bool bIsBlocking = false;
 
 	void Block();
 	void ChooseComboAnimMontage();

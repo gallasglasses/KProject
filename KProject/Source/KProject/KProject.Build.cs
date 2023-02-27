@@ -15,8 +15,10 @@ public class KProject : ModuleRules
             "Engine",
             "InputCore",
             "SlateCore",
-            "Slate" 
-		});
+            "Slate" ,
+            "GameplayTasks",
+            "NavigationSystem"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
@@ -26,7 +28,13 @@ public class KProject : ModuleRules
         "KProject/Public/Components",
         "KProject/Public/Damaging",
         "KProject/Public/UI",
-        "KProject/Public/Pickups"
+        "KProject/Public/Pickups",
+        "KProject/Public/AI",
+        "KProject/Public/AI/Enemies/People",
+        "KProject/Public/AI/Tasks",
+        "KProject/Public/AI/Services",
+        "KProject/Public/Weapons",
+        "KProject/Public/Abilities"
         });
 
 		// Uncomment if you are using Slate UI
