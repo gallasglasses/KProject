@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Player/KP_BaseCharacter.h"
+#include "AI/KP_AIController.h"
 #include "Components/KP_CharacterAbilitiesComponent.h"
 #include "Components/KP_CharacterMovementComponent.h"
 #include "Components/KP_HealthComponent.h"
@@ -8,8 +9,10 @@
 #include "Components/KP_ManaComponent.h"
 #include "UI/KP_HealthBarWidget.h"
 
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/Controller.h"
@@ -37,6 +40,11 @@ AKP_BaseCharacter::AKP_BaseCharacter(const FObjectInitializer& ObjInit)
 	CameraComponent-> SetupAttachment(SpringArmComponent);
 	CameraComponent->SetRelativeRotation(FRotator(0.0f, -20.0f, 0.0f));
 
+	CameraCollisionComponent = CreateDefaultSubobject<USphereComponent>("CameraCollisionComponent");
+	CameraCollisionComponent->SetupAttachment(CameraComponent);
+	CameraCollisionComponent->InitSphereRadius(10.f);
+	CameraCollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
+
 	HealthComponent = CreateDefaultSubobject<UKP_HealthComponent>("HealthComponent");
 	StaminaComponent = CreateDefaultSubobject<UKP_StaminaComponent>("StaminaComponent");
 	ManaComponent = CreateDefaultSubobject<UKP_ManaComponent>("ManaComponent");
@@ -60,6 +68,8 @@ AKP_BaseCharacter::AKP_BaseCharacter(const FObjectInitializer& ObjInit)
 	SwordTriggerHitComponent->AttachToComponent(GetMesh(), AttachmentRules, "FX_Sword_Bottom");
 	SwordTriggerHitComponent->OnComponentBeginOverlap.AddDynamic(this, &AKP_BaseCharacter::OnOverlapHit);
 	SwordTriggerHitComponent->IgnoreActorWhenMoving(GetOwner(), true);
+
+	SetGenericTeamId(FGenericTeamId((int32)InitialTeam));
 }
 
 void AKP_BaseCharacter::BeginPlay()
@@ -71,8 +81,9 @@ void AKP_BaseCharacter::BeginPlay()
 	check(ManaComponent);
 	check(AbilitiesComponent);
 	check(HealthTextComponent);
-	check(HealthWidgetComponent)
+	check(HealthWidgetComponent);
 	check(GetCharacterMovement());
+	check(CameraCollisionComponent);
 	
 	OnHealthChanged(HealthComponent->GetHealth(), 0.0f);
 	HealthComponent->OnDeath.AddUObject(this, &AKP_BaseCharacter::OnDeath);
@@ -85,6 +96,8 @@ void AKP_BaseCharacter::BeginPlay()
 
 	LandedDelegate.AddDynamic(this, &AKP_BaseCharacter::OnGroundLanded);
 
+	CameraCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AKP_BaseCharacter::OnCameraCollisionBeginOverlap);
+	CameraCollisionComponent->OnComponentEndOverlap.AddDynamic(this, &AKP_BaseCharacter::OnCameraCollisionEndOverlap);
 	//PlayAnimMontage(LevelStartAnimMontage);
 }
 
@@ -172,10 +185,41 @@ void AKP_BaseCharacter::OnOverlapHit(UPrimitiveComponent* OverlappedComp, AActor
 	}
 }
 
+void AKP_BaseCharacter::OnCameraCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	CheckCameraOverlap();
+}
+
+void AKP_BaseCharacter::OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	CheckCameraOverlap();
+}
+
+void AKP_BaseCharacter::CheckCameraOverlap()
+{
+	const auto HideMesh = CameraCollisionComponent->IsOverlappingComponent(GetCapsuleComponent());
+	GetMesh()->SetOwnerNoSee(HideMesh);
+
+	TArray<USceneComponent*> MeshChildren;
+	GetMesh()->GetChildrenComponents(true, MeshChildren);
+
+	for (auto MeshChild : MeshChildren)
+	{
+		const auto MeshChildGeomtery = Cast<UPrimitiveComponent>(MeshChild);
+		if (MeshChildGeomtery)
+		{
+			MeshChildGeomtery->SetOwnerNoSee(HideMesh);
+		}
+	}
+
+}
+
 void AKP_BaseCharacter::MoveForward(float Amount)
 {
+	bIsMoving = Amount != 0.f;
 	if (Amount == 0.f) return;
 	AddMovementInput(GetActorForwardVector(), Amount);
+
 	if (bIsRunning)
 	{
 		OnGiveAnyStamina.Broadcast();
@@ -186,6 +230,10 @@ void AKP_BaseCharacter::MoveRight(float Amount)
 {
 	if (Amount == 0.f) return;
 	AddMovementInput(GetActorRightVector(), Amount);
+	if (bIsRunning && !bIsMoving)
+	{
+		OnGiveAnyStamina.Broadcast();
+	}
 }
 
 void AKP_BaseCharacter::OnStartRunning()
@@ -223,13 +271,14 @@ void AKP_BaseCharacter::OnDeath()
 
 	PlayAnimMontage(DeathAnimMontage);
 	GetCharacterMovement()->DisableMovement();
-	SetLifeSpan(5.f);
+	SetLifeSpan(DeathAnimMontage->CalculateSequenceLength());
 
 	if (Controller)
 	{
 		Controller->ChangeState(NAME_Spectating);
 	}
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	bIsAttacking = false;
 }
 
 void AKP_BaseCharacter::OnExhausted()
@@ -257,7 +306,6 @@ void AKP_BaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 
 //void AKP_BaseCharacter::OnStaminaChanged(float Stamina, float StaminaDelta)
 //{
-//	
 //}
 
 void AKP_BaseCharacter::MakeDamage(const FHitResult& HitResult)

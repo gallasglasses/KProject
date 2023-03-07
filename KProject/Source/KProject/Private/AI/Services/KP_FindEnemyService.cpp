@@ -6,6 +6,7 @@
 #include "Components/KP_AIPerceptionComponent.h"
 #include "KP_Utils.h"
 
+#include "GameFramework/Actor.h"
 #include "BehaviorTree/BlackBoardComponent.h"
 #include "AIController.h"
 
@@ -24,12 +25,7 @@ void UKP_FindEnemyService::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* No
 		if (PerceptionComponent)
 		{
 			Blackboard->SetValueAsObject(EnemyActorKey.SelectedKeyName, PerceptionComponent->GetClosetEnemy());
-			if (PerceptionComponent->GetClosetEnemy())
-			{
-				Controller->BroadcastEnemyLocation((PerceptionComponent->GetClosetEnemy())->GetActorLocation());//
-			}
 		}
 	}
-
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 }

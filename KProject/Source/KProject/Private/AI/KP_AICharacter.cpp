@@ -80,10 +80,8 @@ void AKP_AICharacter::BeginPlay()
 	Super::BeginPlay();
 
 	check(HealthComponent);
-	check(StaminaComponent);
-	check(ManaComponent);
 	check(HealthTextComponent);
-	check(HealthWidgetComponent)
+	check(HealthWidgetComponent);
 	check(GetCharacterMovement());
 	check(WeaponComponent);
 
@@ -91,12 +89,10 @@ void AKP_AICharacter::BeginPlay()
 	HealthComponent->OnDeath.AddUObject(this, &AKP_AICharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &AKP_AICharacter::OnHealthChanged);
 
-	WeaponComponent->OnWantToStartThrowing.AddUObject(this, &AKP_AICharacter::OnStartAttacking);
-	WeaponComponent->OnWantToStopThrowing.AddUObject(this, &AKP_AICharacter::OnStopAttacking);
+	WeaponComponent->OnWantToStartAttack.AddUObject(this, &AKP_AICharacter::OnStartAttacking);
+	WeaponComponent->OnWantToStopAttack.AddUObject(this, &AKP_AICharacter::OnStopAttacking);
 
 	LandedDelegate.AddDynamic(this, &AKP_AICharacter::OnGroundLanded);
-	const auto CharacterController = Cast<AKP_AIController>(GetController());
-	CharacterController->OnFindEnemy.AddUObject(this, &AKP_AICharacter::OnFindEnemy);
 }
 
 void AKP_AICharacter::Tick(float DeltaTime)
@@ -137,7 +133,7 @@ void AKP_AICharacter::SetThrowing(bool bIsActing)
 	if (bIsThrowingWeapon)
 	{
 		UE_LOG(AICharacterLog, Display, TEXT("Throwing Weapon"));
-		WeaponComponent->ThrowDagger();
+		WeaponComponent->WeaponAttack();
 	}
 }
 
@@ -162,11 +158,6 @@ void AKP_AICharacter::OnStopAttacking()
 {
 	UE_LOG(AICharacterLog, Display, TEXT("On Stop Attack"));
 	StopAttack();
-}
-
-FVector AKP_AICharacter::GetEnemyLocation()
-{
-	return EnemyLocation;
 }
 
 void AKP_AICharacter::OnGroundLanded(const FHitResult& Hit)
@@ -219,11 +210,6 @@ void AKP_AICharacter::OnHealthChanged(float Health, float HealthDelta)
 	}
 	HealthBarWidget->SetHealthPercent(HealthComponent->GetHealthPercent());
 	HealthBarWidget->SetScaleDamage(HealthDelta);
-}
-
-void AKP_AICharacter::OnFindEnemy(FVector Location)
-{
-	EnemyLocation = Location;
 }
 
 void AKP_AICharacter::MeleeAttack()

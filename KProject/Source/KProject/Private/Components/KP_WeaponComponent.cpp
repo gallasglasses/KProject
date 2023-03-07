@@ -2,6 +2,8 @@
 
 #include "Components/KP_WeaponComponent.h"
 #include "Weapons/KP_Dagger.h"
+#include "Components/KP_HealthComponent.h"
+#include "KP_Utils.h"
 
 #include "GameFramework/Character.h"
 
@@ -13,9 +15,11 @@ UKP_WeaponComponent::UKP_WeaponComponent()
 
 }
 
-void UKP_WeaponComponent::ThrowDagger()
+void UKP_WeaponComponent::WeaponAttack()
 {
 	if(!Weapon) return;
+
+	UE_LOG(WeaponComponentLog, Display, TEXT("WeaponAttack"));
 	Weapon->OnStart();
 }
 
@@ -24,6 +28,17 @@ void UKP_WeaponComponent::BeginPlay()
 	Super::BeginPlay();
 	
 	SpawnWeapon();
+}
+
+void UKP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (Weapon)
+	{
+		Weapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		Weapon->Destroy();
+	}
+	Weapon = nullptr;
+	Super::EndPlay(EndPlayReason);
 }
 
 void UKP_WeaponComponent::SpawnWeapon()
@@ -44,10 +59,13 @@ void UKP_WeaponComponent::SpawnWeapon()
 
 void UKP_WeaponComponent::OnWantToStart()
 {
-	OnWantToStartThrowing.Broadcast();
+	if (Weapon)
+	{
+		OnWantToStartAttack.Broadcast();
+	}
 }
 
 void UKP_WeaponComponent::OnWantToStop()
 {
-	OnWantToStopThrowing.Broadcast();
+	OnWantToStopAttack.Broadcast();
 }

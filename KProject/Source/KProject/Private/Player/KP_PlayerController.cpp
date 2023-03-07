@@ -3,3 +3,7 @@
 
 #include "Player/KP_PlayerController.h"
 
+AKP_PlayerController::AKP_PlayerController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}

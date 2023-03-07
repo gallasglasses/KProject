@@ -6,12 +6,12 @@
 #include "GameFramework/PlayerController.h"
 #include "KP_PlayerController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class KPROJECT_API AKP_PlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+public: 
+
+	AKP_PlayerController();
 };

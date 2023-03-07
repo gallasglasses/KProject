@@ -60,7 +60,7 @@ void AKP_Shield::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDama
 	if (Damage <= 0.f || !IsShieldActive() || !GetWorld()) return;
 
 	SetDefenseAmount(DefenseAmount - Damage);
-	DamageCauser->Destroy();
+	//DamageCauser->Destroy();
 	if (!IsShieldActive())
 	{
 		DestroyShield();

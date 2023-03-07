@@ -49,8 +49,12 @@ protected:
     void MakeDamage(FHitResult& HitResult);
 
     ACharacter* GetPlayer() const;
-    APlayerController* GetPlayerController() const;
+    //APlayerController* GetPlayerController() const;
 
 
     bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
+
+private:
+
+     AController* GetController() const;
 };

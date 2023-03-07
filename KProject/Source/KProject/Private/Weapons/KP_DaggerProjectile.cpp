@@ -2,6 +2,7 @@
 
 #include "Weapons/KP_DaggerProjectile.h"
 #include "Components/KP_PhysicsMovementComponent.h"
+#include "AI/KP_AIController.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -63,10 +64,10 @@ void AKP_DaggerProjectile::BeginPlay()
 	MovementComponent->Velocity = GetActorForwardVector() * MoveSpeed;
 	MovementComponent->SetComponentTickEnabled(true);
 
-	UE_LOG(DaggerProjectileLog, Display, TEXT("Velocity: %s"), *MovementComponent->Velocity.ToString());
+	//UE_LOG(DaggerProjectileLog, Display, TEXT("Velocity: %s"), *MovementComponent->Velocity.ToString());
 
 	CollisionComponent->IgnoreActorWhenMoving(GetOwner(), true);
-	UE_LOG(DaggerProjectileLog, Display, TEXT("Owner: %s"), GetOwner());
+	//UE_LOG(DaggerProjectileLog, Display, TEXT("Owner: %s"), GetOwner());
 
 	CollisionComponent->OnComponentHit.AddDynamic(this, &AKP_DaggerProjectile::OnProjectileHit);
 
@@ -78,11 +79,18 @@ void AKP_DaggerProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AA
 	if (!GetWorld()) return;
 
 	Stop();
-
-	UGameplayStatics::ApplyPointDamage(OtherActor, DamageAmount, ShotDirection, Hit, GetController(), this, UDamageType::StaticClass());
-
-	DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 24.f, FColor::Magenta, false, 5.0f);
-
+	const auto KP_AIController = Cast<AKP_AIController>(GetController());
+	if (KP_AIController && KP_AIController->GetTeamAttitudeTowards(*OtherActor) == ETeamAttitude::Hostile)
+	{
+		UE_LOG(DaggerProjectileLog, Display, TEXT("Hostile"));
+	
+		UGameplayStatics::ApplyPointDamage(OtherActor, DamageAmount, ShotDirection, Hit, GetController(), this, UDamageType::StaticClass());
+		DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 24.f, FColor::Magenta, false, 5.0f);
+	}
+	else
+	{
+		UE_LOG(DaggerProjectileLog, Display, TEXT("Friendly"));
+	}
 	Destroy();
 }
 

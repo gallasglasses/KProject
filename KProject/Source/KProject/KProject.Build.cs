@@ -30,6 +30,8 @@ public class KProject : ModuleRules
         "KProject/Public/UI",
         "KProject/Public/Pickups",
         "KProject/Public/AI",
+        "KProject/Public/AI/EQS",
+        "KProject/Public/AI/Enemies/Animals",
         "KProject/Public/AI/Enemies/People",
         "KProject/Public/AI/Tasks",
         "KProject/Public/AI/Services",

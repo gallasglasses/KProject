@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GenericTeamAgentInterface.h"
+#include "KP_CoreTypes.h"
 #include "KP_BaseCharacter.generated.h"
 
 class UKP_CharacterAbilitiesComponent;
@@ -13,7 +15,8 @@ class UKP_ManaComponent;
 class AKP_Shield;
 
 class UAnimMontage;
-class UBoxComponent;
+class UBoxComponent; 
+class USphereComponent;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -24,7 +27,7 @@ DECLARE_MULTICAST_DELEGATE(FOnGiveAnyStaminaSignature);
 DECLARE_MULTICAST_DELEGATE(FOnGiveAnyManaSignature);
 
 UCLASS()
-class KPROJECT_API AKP_BaseCharacter : public ACharacter
+class KPROJECT_API AKP_BaseCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -34,6 +37,9 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	USphereComponent* CameraCollisionComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* SpringArmComponent;
@@ -82,6 +88,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Damage")
 	FVector2D LandedDamage = FVector2D(10.f, 100.f);
+
+	UPROPERTY(VisibleAnywhere, Category = "Behavior Type")
+	FGenericTeamId TeamID;
+
+	UPROPERTY(EditAnywhere, Category = "Behavior Type")
+	EBehaviorType InitialTeam = EBehaviorType::Neutral;
 	
 	virtual void BeginPlay() override;
 
@@ -105,6 +117,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 	float WeaponDamageAmount = 20.0f;
 
+	UFUNCTION(BlueprintCallable, Category = "Behavior Type")
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override { TeamID = NewTeamID; };
+
+	UFUNCTION(BlueprintCallable, Category = "Behavior Type")
+	virtual FGenericTeamId GetGenericTeamId() const override { return TeamID; }
+
 	void SetBlockingState(bool BlockingState);
 
 	FOnGiveAnyStaminaSignature OnGiveAnyStamina;
@@ -121,6 +139,7 @@ private:
 
 	bool bWantsToRun = false;
 	bool bIsRunning = false;
+	bool bIsMoving = false;
 	bool bIsAttacking = false;
 	bool bIsDamageDone = false;
 	bool bIsComboAttack = false;
@@ -153,4 +172,11 @@ private:
 	UFUNCTION()
 	void OnOverlapHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-};
+	UFUNCTION()
+	void OnCameraCollisionBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION()
+	void OnCameraCollisionEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void CheckCameraOverlap();
+}; 

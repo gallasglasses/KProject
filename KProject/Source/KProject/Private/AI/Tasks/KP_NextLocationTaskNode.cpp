@@ -6,8 +6,6 @@
 #include "AIController.h"
 #include "NavigationSystem.h"
 
-
-
 UKP_NextLocationTaskNode::UKP_NextLocationTaskNode()
 {
 	NodeName = "Next Location";
@@ -32,14 +30,24 @@ EBTNodeResult::Type UKP_NextLocationTaskNode::ExecuteTask(UBehaviorTreeComponent
 	{
 		auto CenterActor = Cast<AActor>(Blackboard->GetValueAsObject(CenterActorKey.SelectedKeyName));
 		if (!CenterActor) return EBTNodeResult::Failed;
-		if(CenterActor->GetVelocity().Size() == 0.f) return EBTNodeResult::Failed;
+		if (bFindWhenEnemyMoving)
+		{
+			if (CenterActor->GetVelocity().Size() == 0.f) return EBTNodeResult::Failed;
+		}
+		
 		PawnLocation = CenterActor->GetActorLocation();
 	}
 
-	const auto Found = NavSys->GetRandomReachablePointInRadius(PawnLocation, Radius, NavLocation);
-	if (!Found) return EBTNodeResult::Failed;
-	
-	Blackboard->SetValueAsVector(AimLocationKey.SelectedKeyName, NavLocation.Location);
+	if (RandomLocation)
+	{
+		const auto Found = NavSys->GetRandomReachablePointInRadius(PawnLocation, Radius, NavLocation);
+		if (!Found) return EBTNodeResult::Failed;
+		Blackboard->SetValueAsVector(AimLocationKey.SelectedKeyName, NavLocation.Location);
+	}
+	else
+	{
+		Blackboard->SetValueAsVector(AimLocationKey.SelectedKeyName, PawnLocation);
+	}
 
 	return EBTNodeResult::Succeeded;
 }

@@ -8,8 +8,8 @@
 
 class AKP_Dagger;
 
-DECLARE_MULTICAST_DELEGATE(FOnWantToStartThrowingSignature);
-DECLARE_MULTICAST_DELEGATE(FOnWantToStopThrowingSignature);
+DECLARE_MULTICAST_DELEGATE(FOnWantToStartAttackSignature);
+DECLARE_MULTICAST_DELEGATE(FOnWantToStopAttackSignature);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class KPROJECT_API UKP_WeaponComponent : public UActorComponent
@@ -20,12 +20,12 @@ public:
 	
 	UKP_WeaponComponent();
 
-	FOnWantToStartThrowingSignature OnWantToStartThrowing;
-	FOnWantToStopThrowingSignature OnWantToStopThrowing;
+	FOnWantToStartAttackSignature OnWantToStartAttack;
+	FOnWantToStopAttackSignature OnWantToStopAttack;
 
 	void OnWantToStart();
 	void OnWantToStop();
-	void ThrowDagger();
+	void WeaponAttack();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
@@ -35,6 +35,7 @@ protected:
 	FName WeaponSocketName = "FX_Dagger";
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 private:
 
@@ -42,5 +43,4 @@ private:
 	AKP_Dagger* Weapon = nullptr;
 
 	void SpawnWeapon();
-		
 };

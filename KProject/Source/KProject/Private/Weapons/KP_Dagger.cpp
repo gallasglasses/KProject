@@ -2,7 +2,7 @@
 
 #include "Weapons/KP_Dagger.h"
 #include "Weapons/KP_DaggerProjectile.h"
-#include "AI/KP_AICharacter.h"
+#include "AI/KP_AIBaseEnemyCharacter.h"
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -93,14 +93,9 @@ bool AKP_Dagger::GetTraceData(FVector& TraceStart, FVector& TraceEnd) const
 
     TraceStart = ViewLocation;
 
-    const auto AICharacter = Cast<AKP_AICharacter>(GetPlayer());//
-    if (!AICharacter) return false;//
-    const FVector ShootDirection = UKismetMathLibrary::GetDirectionUnitVector(AICharacter->GetActorLocation(), AICharacter->GetEnemyLocation());//
-    //const FVector ShootDirection = ViewRotation.Vector();
-    const auto TraceDistance = FVector::Distance(AICharacter->GetActorLocation(), AICharacter->GetEnemyLocation()); //
-    TraceEnd = TraceStart + ShootDirection * TraceDistance;
-    UE_LOG(DaggerLog, Display, TEXT("TraceDistance %f"), TraceDistance);
-    //TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
+    const FVector ShootDirection = ViewRotation.Vector();
+    TraceEnd = TraceStart + ShootDirection * TraceMaxDistance;
+    UE_LOG(DaggerLog, Display, TEXT("TraceEnd %s"), *TraceEnd.ToString());
 
     return true;
 }
@@ -129,7 +124,7 @@ void AKP_Dagger::MakeDamage(FHitResult& HitResult)
     if (!DamagedActor)
         return;
 
-    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), GetPlayer());
+    DamagedActor->TakeDamage(DamageAmount, FDamageEvent(), GetController(), GetPlayer());
 }
 
 ACharacter* AKP_Dagger::GetPlayer() const
@@ -137,9 +132,15 @@ ACharacter* AKP_Dagger::GetPlayer() const
 	return !Cast<ACharacter>(GetOwner()) ? nullptr : Cast<ACharacter>(GetOwner());
 }
 
-APlayerController* AKP_Dagger::GetPlayerController() const
+//APlayerController* AKP_Dagger::GetPlayerController() const
+//{
+//    return !GetPlayer() ? nullptr : GetPlayer()->GetController<APlayerController>();
+//}
+
+AController* AKP_Dagger::GetController() const
 {
-    return !GetPlayer() ? nullptr : GetPlayer()->GetController<APlayerController>();
+    const auto Pawn = Cast<APawn>(GetOwner());
+    return Pawn ? Pawn->GetController() : nullptr;
 }
 
 bool AKP_Dagger::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
@@ -153,9 +154,7 @@ bool AKP_Dagger::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotatio
     else
     {
         ViewLocation = GetMuzzleWorldLocation();
-        //ViewRotation = WeaponMesh->GetSocketRotation(WeaponSocketName);
         ViewRotation = KP_Character->GetActorRotation(); 
-        //(Pitch=-33.658695,Yaw=-172.567459,Roll=-162.351715)
         UE_LOG(DaggerLog, Display, TEXT("GetPlayerViewPoint AI"));
     }
 

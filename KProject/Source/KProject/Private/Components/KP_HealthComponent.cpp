@@ -37,10 +37,9 @@ void UKP_HealthComponent::BeginPlay()
 
 void UKP_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-	if(Damage <=0.f || IsDead() || !GetWorld()) return;
+	if(Damage <=0.f || IsDead() || !GetWorld() || !DamagedActor) return;
 	const auto CharacterDamaged = Cast<AKP_BaseCharacter>(DamagedActor);
-	if(!CharacterDamaged) return;
-	if (CharacterDamaged->IsBlocking())
+	if (CharacterDamaged && CharacterDamaged->IsBlocking())
 	{
 		const auto AbilitiesComponent = KP_Utils::GetPlayerComponent<UKP_CharacterAbilitiesComponent>(CharacterDamaged);
 		if (!AbilitiesComponent) return;

@@ -90,12 +90,7 @@ public:
 
 	void OnStartAttacking();
 	void OnStopAttacking();
-	FVector GetEnemyLocation();
 
-protected:
-
-	/*UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-		TSubclassOf<AKP_Dagger> DaggerClass;*/
 
 private:
 
@@ -117,14 +112,12 @@ private:
 	void ComboAttackSave();
 	void ResetCombo();
 	void OnDeath();
-	void OnHealthChanged(float Health, float HealthDelta); 
-	void OnFindEnemy(FVector Location);
+	void OnHealthChanged(float Health, float HealthDelta);
 	void OnPlayAnimMontage(int8 Count);
 	void StopAttack();
 	void MeleeAttack();
 	void MoveForward(float Amount);
 	void MoveRight(float Amount);
-	//void ThrowWeapon();
 
 	UFUNCTION()
 		void OnGroundLanded(const FHitResult& Hit);
