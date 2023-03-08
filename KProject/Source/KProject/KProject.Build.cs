@@ -36,7 +36,8 @@ public class KProject : ModuleRules
         "KProject/Public/AI/Tasks",
         "KProject/Public/AI/Services",
         "KProject/Public/Weapons",
-        "KProject/Public/Abilities"
+        "KProject/Public/Abilities",
+        "KProject/"
         });
 
 		// Uncomment if you are using Slate UI

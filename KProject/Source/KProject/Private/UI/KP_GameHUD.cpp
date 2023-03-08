@@ -2,7 +2,7 @@
 
 
 #include "UI/KP_GameHUD.h"
-
+#include "KProjectGameModeBase.h"
 #include "Blueprint/UserWidget.h"
 
 void AKP_GameHUD::BeginPlay()
@@ -14,4 +14,9 @@ void AKP_GameHUD::BeginPlay()
 	{
 		PlayerHUDWidget->AddToViewport();
 	}
+}
+
+void AKP_GameHUD::OnGameStateChanged(EGameState State)
+{
+	
 }

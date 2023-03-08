@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "KP_CoreTypes.h"
 #include "KP_GameHUD.generated.h"
 
 class UUserWidget;
@@ -19,4 +20,8 @@ protected:
 	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
 
 	virtual void BeginPlay() override;
+
+private:
+		
+		void OnGameStateChanged(EGameState State);
 };

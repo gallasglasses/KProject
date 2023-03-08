@@ -14,4 +14,12 @@ class KPROJECT_API AKP_PlayerController : public APlayerController
 public: 
 
 	AKP_PlayerController();
+
+protected:
+	virtual void SetupInputComponent() override;
+
+private:
+	
+	void OnPauseGame();
+
 };
