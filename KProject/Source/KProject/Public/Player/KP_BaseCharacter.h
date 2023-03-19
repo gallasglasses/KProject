@@ -23,8 +23,9 @@ class USpringArmComponent;
 class UTextRenderComponent;
 class UWidgetComponent;
 
-DECLARE_MULTICAST_DELEGATE(FOnGiveAnyStaminaSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGiveAnyStaminaSignature, bool);
 DECLARE_MULTICAST_DELEGATE(FOnGiveAnyManaSignature);
+DECLARE_MULTICAST_DELEGATE(FDeadSignature);
 
 UCLASS()
 class KPROJECT_API AKP_BaseCharacter : public ACharacter, public IGenericTeamAgentInterface
@@ -127,10 +128,12 @@ public:
 
 	FOnGiveAnyStaminaSignature OnGiveAnyStamina;
 	FOnGiveAnyManaSignature OnGiveAnyMana;
+	FDeadSignature OnDead;
 
 private:
 	
 	FTimerHandle AttackTimerHandle;
+	FTimerHandle DeadTimerHandle;
 
 	int8 ComboAttackCount = 0;
 	int8 RecoveryCount = 0;
@@ -150,6 +153,7 @@ private:
 	void ComboAttackSave();
 	void ResetCombo();
 	void OnDeath();
+	void Dead();
 	void OnExhausted();
 	void OnMuggle();
 	void OnHealthChanged(float Health, float HealthDelta);

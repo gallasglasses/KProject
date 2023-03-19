@@ -2,7 +2,7 @@
 
 
 #include "Damaging/KP_DamageActor.h"
-#include "DrawDebugHelpers.h"
+//#include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -24,7 +24,7 @@ void AKP_DamageActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 24, SphereColor);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), Radius, 24, SphereColor);
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), Damage, GetActorLocation(), Radius, DamageType, {}, this, nullptr, DoFullDamage);
 }
 

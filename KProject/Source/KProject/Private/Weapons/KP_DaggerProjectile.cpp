@@ -6,7 +6,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "DrawDebugHelpers.h"
+//#include "DrawDebugHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -85,7 +85,7 @@ void AKP_DaggerProjectile::OnProjectileHit(UPrimitiveComponent* HitComponent, AA
 		UE_LOG(DaggerProjectileLog, Display, TEXT("Hostile"));
 	
 		UGameplayStatics::ApplyPointDamage(OtherActor, DamageAmount, ShotDirection, Hit, GetController(), this, UDamageType::StaticClass());
-		DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 24.f, FColor::Magenta, false, 5.0f);
+		//DrawDebugPoint(GetWorld(), Hit.ImpactPoint, 24.f, FColor::Magenta, false, 5.0f);
 	}
 	else
 	{

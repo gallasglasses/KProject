@@ -23,6 +23,7 @@ void AKP_AIFactory::BeginPlay()
 
 void AKP_AIFactory::StartSpawnActorsTimer()
 {
+	//TODO: Need take a pause or stop timer (or smth like this) depending on GameState of AKProjectGameModeBase
 	GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AKP_AIFactory::SpawnActors, SpawnRate, true, SpawnRate);
 }
 
@@ -35,7 +36,7 @@ void AKP_AIFactory::SpawnActors()
 	const auto KP_AIActor = GetWorld()->SpawnActorDeferred<APawn>(AIPawnClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 	KP_AIActor->FinishSpawning(SpawnTransform);	
 	
-	if (SpawnedActorsCount + 1 < GameData.AIPlayersNum)
+	if (SpawnedActorsCount + 1 < AIPlayersNum ) //GameData.AIPlayersNum
 	{
 		++SpawnedActorsCount;
 	}

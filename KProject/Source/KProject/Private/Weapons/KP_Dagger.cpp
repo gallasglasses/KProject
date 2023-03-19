@@ -6,7 +6,7 @@
 
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "DrawDebugHelpers.h"
+//#include "DrawDebugHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -61,7 +61,7 @@ void AKP_Dagger::MakeShot()
     const FVector EndPoint = HitResult.bBlockingHit ? HitResult.ImpactPoint : TraceEnd;
     const FVector Direction = (EndPoint + GetMuzzleWorldLocation().GetSafeNormal());
 
-    DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Magenta, false, 1.f, 0, 3.f);
+    //DrawDebugLine(GetWorld(), TraceStart, TraceEnd, FColor::Magenta, false, 1.f, 0, 3.f);
     const FTransform SpawnTransform(FRotator::ZeroRotator, GetMuzzleWorldLocation());
     AKP_DaggerProjectile* Projectile = GetWorld()->SpawnActorDeferred<AKP_DaggerProjectile>(DaggerProjectileClass, SpawnTransform);
     if (Projectile)

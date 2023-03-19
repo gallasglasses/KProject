@@ -4,6 +4,7 @@
 #include "Components/KP_HealthComponent.h"
 #include "Components/KP_StaminaComponent.h"
 #include "Components/KP_ManaComponent.h"
+#include "Player/KP_PlayerController.h"
 #include "KP_Utils.h"
 
 #include "Components/ProgressBar.h"
@@ -65,8 +66,10 @@ bool UKP_PlayerUIWidget::IsPlayerSpectating() const
 //	
 //}
 
-bool UKP_PlayerUIWidget::Initialize()
+void UKP_PlayerUIWidget::NativeOnInitialized()
 {
+	Super::NativeOnInitialized();
+
 	const auto HealthComponent = KP_Utils::GetPlayerComponent<UKP_HealthComponent>(GetOwningPlayerPawn());
 	if (HealthComponent)
 	{
@@ -84,7 +87,6 @@ bool UKP_PlayerUIWidget::Initialize()
 	{
 		ManaComponent->OnManaChanged.AddUObject(this, &UKP_PlayerUIWidget::OnManaChanged);
 	}
-	return Super::Initialize();
 }
 
 void UKP_PlayerUIWidget::SetHealthPercent(float HealthPercent)
@@ -122,6 +124,11 @@ void UKP_PlayerUIWidget::OnHealthChanged(float Health, float HealthDelta)
 	if (HealthDelta < 0.0f)
 	{
 		OnTakeDamage();
+
+		if(!IsAnimationPlaying(DamageAnimation))
+		{
+			PlayAnimation(DamageAnimation);
+		}
 	}
 
 	SetHealthPercent(GetHealthPercent());

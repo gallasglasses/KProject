@@ -33,8 +33,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "UI")
 	void OnTakeDamage();
 
-	virtual bool Initialize() override;
-
 	void SetHealthPercent(float HealthPercent);
 
 	void SetStaminaPercent(float StaminaPercent);
@@ -42,6 +40,8 @@ public:
 	void SetManaPercent(float ManaPercent);
 
 protected:
+
+	virtual void NativeOnInitialized() override;
 
 	UPROPERTY(meta = (BindWidget))
 		UProgressBar* HealthProgressBar;
@@ -57,6 +57,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 		UImage* DamageImage;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+		UWidgetAnimation* DamageAnimation;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 		FLinearColor HealthProgressBarColor = FLinearColor::Green;

@@ -33,10 +33,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn Parametrs")
 		TSubclassOf<APawn> AIPawnClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Spawn Parametrs")
-		FGameData GameData;
+	UPROPERTY(EditAnywhere, Category = "Spawn Parametrs", meta = (ClampMin = "1", ClampMax = "1000.0")) //FGameData GameData;
+		float AIPlayersNum;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Spawn Parametrs")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn Parametrs")
 		float SpawnRate = 1.0f;
 
 private:

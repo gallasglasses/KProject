@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Player/KP_BaseCharacter.h"
+#include "Player/KP_PlayerController.h"
 #include "AI/KP_AIController.h"
 #include "Components/KP_CharacterAbilitiesComponent.h"
 #include "Components/KP_CharacterMovementComponent.h"
@@ -219,33 +220,27 @@ void AKP_BaseCharacter::MoveForward(float Amount)
 	bIsMoving = Amount != 0.f;
 	if (Amount == 0.f) return;
 	AddMovementInput(GetActorForwardVector(), Amount);
-
-	if (bIsRunning)
-	{
-		OnGiveAnyStamina.Broadcast();
-	}
 }
 
 void AKP_BaseCharacter::MoveRight(float Amount)
 {
 	if (Amount == 0.f) return;
 	AddMovementInput(GetActorRightVector(), Amount);
-	if (bIsRunning && !bIsMoving)
-	{
-		OnGiveAnyStamina.Broadcast();
-	}
 }
 
 void AKP_BaseCharacter::OnStartRunning()
 {
 	bWantsToRun = true;
 	bIsRunning = true;
+
+	OnGiveAnyStamina.Broadcast(bIsRunning);
 }
 
 void AKP_BaseCharacter::OnStopRunning()
 {
 	bWantsToRun = false;
 	bIsRunning = false;
+	OnGiveAnyStamina.Broadcast(bIsRunning);
 }
 
 void AKP_BaseCharacter::Block()
@@ -268,17 +263,24 @@ void AKP_BaseCharacter::Block()
 void AKP_BaseCharacter::OnDeath()
 {
 	UE_LOG(BaseCharacterLog, Display, TEXT("%s, You are dead"), *GetName());
-
 	PlayAnimMontage(DeathAnimMontage);
 	GetCharacterMovement()->DisableMovement();
-	SetLifeSpan(DeathAnimMontage->CalculateSequenceLength());
+	//SetLifeSpan(DeathAnimMontage->CalculateSequenceLength() + 1.f); // TODO: Maybe not destroy actor, do longer death scene
 
-	if (Controller)
+	/*if (Controller)
 	{
 		Controller->ChangeState(NAME_Spectating);
-	}
+	}*/
+
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	bIsAttacking = false;
+	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AKP_BaseCharacter::Dead, DeathAnimMontage->CalculateSequenceLength(), false);
+}
+
+void AKP_BaseCharacter::Dead()
+{
+	OnDead.Broadcast();
+	GetWorld()->GetTimerManager().ClearTimer(DeadTimerHandle);
 }
 
 void AKP_BaseCharacter::OnExhausted()

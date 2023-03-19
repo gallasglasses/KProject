@@ -96,6 +96,7 @@ void AKP_AIController::Tick(float DeltaTime)
 
 	//const auto AimActor = KP_AIPerceptionComponent->GetClosetEnemy();
 	const auto AimActor = GetFocusOnActor();
+	if (!AimActor) return;
 	SetFocus(AimActor);
 }
 

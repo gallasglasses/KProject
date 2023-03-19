@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "KP_CoreTypes.h"
 #include "KP_PlayerController.generated.h"
 
 UCLASS()
@@ -16,10 +17,14 @@ public:
 	AKP_PlayerController();
 
 protected:
+
 	virtual void SetupInputComponent() override;
+	virtual void BeginPlay() override;
+
+	void OnPauseGame();
 
 private:
 	
-	void OnPauseGame();
-
+	void OnGameStateChanged(EGameState State);
+	void OnDead();
 };

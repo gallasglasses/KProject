@@ -46,17 +46,29 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Recovery", meta = (EditCondition = "AutoHeal"))
 		float StaminaRecoveryModifier = 5.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Recovery", meta = (EditCondition = "Discharge"))
+		float StaminaDischargeUpdateTime = 0.5f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Recovery", meta = (EditCondition = "Discharge"))
+		float StaminaDischargeDelay = 0.5f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Recovery", meta = (EditCondition = "Discharge"))
+		float StaminaDischargeModifier = 0.5f;
+
 	virtual void BeginPlay() override;
 
 private:
 
+	FTimerHandle StaminaDischargeTimerHandle;
 	FTimerHandle StaminaRecoveryTimerHandle;
-	float Stamina = 0.0f;
+
+	float Stamina = 0.0f; 
 
 	UFUNCTION()
-	void OnGiveAnyStamina();
+	void OnGiveAnyStamina(bool IsStaminaDischarge);
 
-	void StaminaUpdate();
+	void StaminaRecoveryUpdate();
+	void StaminaDischargeUpdate();
 	void SetStamina(float NewStamina);
 		
 };

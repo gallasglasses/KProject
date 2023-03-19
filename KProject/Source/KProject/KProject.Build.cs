@@ -28,6 +28,8 @@ public class KProject : ModuleRules
         "KProject/Public/Components",
         "KProject/Public/Damaging",
         "KProject/Public/UI",
+        "KProject/Public/Menu",
+        "KProject/Public/Menu/UI",
         "KProject/Public/Pickups",
         "KProject/Public/AI",
         "KProject/Public/AI/EQS",
@@ -37,7 +39,8 @@ public class KProject : ModuleRules
         "KProject/Public/AI/Services",
         "KProject/Public/Weapons",
         "KProject/Public/Abilities",
-        "KProject/"
+        "KProject/Public/Sound",
+        "KProject/Public/"
         });
 
 		// Uncomment if you are using Slate UI

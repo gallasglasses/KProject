@@ -30,31 +30,45 @@ void UKP_StaminaComponent::BeginPlay()
 	
 }
 
-void UKP_StaminaComponent::OnGiveAnyStamina()
+void UKP_StaminaComponent::OnGiveAnyStamina(bool IsStaminaDischarge)
 {
 	if (!GetWorld()) return;
-
-	SetStamina(Stamina - 0.25f);
-
-	GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryTimerHandle);
-
-	if (IsExhausted())
+	if (IsStaminaDischarge)
 	{
-		OnExhausted.Broadcast();
+		GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryTimerHandle);
+
+		GetWorld()->GetTimerManager().SetTimer(StaminaDischargeTimerHandle, this, &UKP_StaminaComponent::StaminaDischargeUpdate, StaminaDischargeUpdateTime, true, StaminaDischargeDelay);
 	}
-	if (AutoStaminaRecovery)
+	else 
 	{
-		GetWorld()->GetTimerManager().SetTimer(StaminaRecoveryTimerHandle, this, &UKP_StaminaComponent::StaminaUpdate, StaminaRecoveryUpdateTime, true, StaminaRecoveryDelay);
+		GetWorld()->GetTimerManager().ClearTimer(StaminaDischargeTimerHandle);
+		if (AutoStaminaRecovery)
+		{
+			GetWorld()->GetTimerManager().SetTimer(StaminaRecoveryTimerHandle, this, &UKP_StaminaComponent::StaminaRecoveryUpdate, StaminaRecoveryUpdateTime, true, StaminaRecoveryDelay);
+		}
 	}
 }
 
-void UKP_StaminaComponent::StaminaUpdate()
+void UKP_StaminaComponent::StaminaRecoveryUpdate()
 {
 	SetStamina(Stamina + StaminaRecoveryModifier);
 
 	if (FMath::IsNearlyEqual(Stamina, MaxStamina) && GetWorld())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryTimerHandle);
+	}
+}
+
+void UKP_StaminaComponent::StaminaDischargeUpdate()
+{
+	SetStamina(Stamina - StaminaDischargeModifier);
+	if (IsExhausted())
+	{
+		OnExhausted.Broadcast();
+	}
+	if (IsExhausted() && GetWorld())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(StaminaDischargeTimerHandle);
 	}
 }
 
