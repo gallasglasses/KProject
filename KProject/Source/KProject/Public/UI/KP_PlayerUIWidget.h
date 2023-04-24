@@ -39,9 +39,11 @@ public:
 
 	void SetManaPercent(float ManaPercent);
 
+	virtual bool Initialize() override;
+
 protected:
 
-	virtual void NativeOnInitialized() override;
+	//virtual void NativeOnInitialized() override;
 
 	UPROPERTY(meta = (BindWidget))
 		UProgressBar* HealthProgressBar;

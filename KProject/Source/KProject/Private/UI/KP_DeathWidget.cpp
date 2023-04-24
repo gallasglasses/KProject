@@ -12,7 +12,7 @@ void UKP_DeathWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	if (LoadLastSaveButton)
+	/*if (LoadLastSaveButton)
 	{
 		LoadLastSaveButton->OnClicked.AddDynamic(this, &UKP_DeathWidget::LoadMostRecentSave);
 	}
@@ -20,19 +20,19 @@ void UKP_DeathWidget::NativeOnInitialized()
 	if (LoadSavedButton)
 	{
 		LoadSavedButton->OnClicked.AddDynamic(this, &UKP_DeathWidget::LoadSaved);
-	}
+	}*/
 }
 
-void UKP_DeathWidget::LoadMostRecentSave()
-{
-	UE_LOG(WBPDeathLog, Display, TEXT("************ Load Most Recent Save ************"));
-}
-
-void UKP_DeathWidget::LoadSaved()
-{
-	UE_LOG(WBPDeathLog, Display, TEXT("************ Load Saved ************"));
-
-}
+//void UKP_DeathWidget::LoadMostRecentSave()
+//{
+//	UE_LOG(WBPDeathLog, Display, TEXT("************ Load Most Recent Save ************"));
+//}
+//
+//void UKP_DeathWidget::LoadSaved()
+//{
+//	UE_LOG(WBPDeathLog, Display, TEXT("************ Load Saved ************"));
+//
+//}
 
 void UKP_DeathWidget::OnRestartGame() // for hard/master game difficulty
 {

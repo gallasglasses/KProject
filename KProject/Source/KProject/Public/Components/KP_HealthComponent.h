@@ -7,6 +7,7 @@
 #include "KP_HealthComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeathByInstigatorSignature, AActor*);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature, float, float);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -19,6 +20,7 @@ public:
 	UKP_HealthComponent();
 
 	FOnDeathSignature OnDeath;
+	FOnDeathByInstigatorSignature OnDeathByInstigator;
 	FOnHealthChangedSignature OnHealthChanged;
 
 	UFUNCTION(BlueprintCallable, Category = "Health")

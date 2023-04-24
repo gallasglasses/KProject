@@ -66,27 +66,49 @@ bool UKP_PlayerUIWidget::IsPlayerSpectating() const
 //	
 //}
 
-void UKP_PlayerUIWidget::NativeOnInitialized()
+//void UKP_PlayerUIWidget::NativeOnInitialized()
+//{
+//	Super::NativeOnInitialized();
+//
+//	const auto HealthComponent = KP_Utils::GetPlayerComponent<UKP_HealthComponent>(GetOwningPlayerPawn());
+//	if (HealthComponent)
+//	{
+//		HealthComponent->OnHealthChanged.AddUObject(this, &UKP_PlayerUIWidget::OnHealthChanged);
+//	}
+//	
+//	const auto StaminaComponent = KP_Utils::GetPlayerComponent<UKP_StaminaComponent>(GetOwningPlayerPawn());
+//	if (StaminaComponent)
+//	{
+//		StaminaComponent->OnStaminaChanged.AddUObject(this, &UKP_PlayerUIWidget::OnStaminaChanged);
+//	}
+//
+//	const auto ManaComponent = KP_Utils::GetPlayerComponent<UKP_ManaComponent>(GetOwningPlayerPawn());
+//	if (ManaComponent)
+//	{
+//		ManaComponent->OnManaChanged.AddUObject(this, &UKP_PlayerUIWidget::OnManaChanged);
+//	}
+//}
+
+bool UKP_PlayerUIWidget::Initialize()
 {
-	Super::NativeOnInitialized();
-
 	const auto HealthComponent = KP_Utils::GetPlayerComponent<UKP_HealthComponent>(GetOwningPlayerPawn());
-	if (HealthComponent)
-	{
-		HealthComponent->OnHealthChanged.AddUObject(this, &UKP_PlayerUIWidget::OnHealthChanged);
-	}
+		if (HealthComponent)
+		{
+			HealthComponent->OnHealthChanged.AddUObject(this, &UKP_PlayerUIWidget::OnHealthChanged);
+		}
+		
+		const auto StaminaComponent = KP_Utils::GetPlayerComponent<UKP_StaminaComponent>(GetOwningPlayerPawn());
+		if (StaminaComponent)
+		{
+			StaminaComponent->OnStaminaChanged.AddUObject(this, &UKP_PlayerUIWidget::OnStaminaChanged);
+		}
 	
-	const auto StaminaComponent = KP_Utils::GetPlayerComponent<UKP_StaminaComponent>(GetOwningPlayerPawn());
-	if (StaminaComponent)
-	{
-		StaminaComponent->OnStaminaChanged.AddUObject(this, &UKP_PlayerUIWidget::OnStaminaChanged);
-	}
-
-	const auto ManaComponent = KP_Utils::GetPlayerComponent<UKP_ManaComponent>(GetOwningPlayerPawn());
-	if (ManaComponent)
-	{
-		ManaComponent->OnManaChanged.AddUObject(this, &UKP_PlayerUIWidget::OnManaChanged);
-	}
+		const auto ManaComponent = KP_Utils::GetPlayerComponent<UKP_ManaComponent>(GetOwningPlayerPawn());
+		if (ManaComponent)
+		{
+			ManaComponent->OnManaChanged.AddUObject(this, &UKP_PlayerUIWidget::OnManaChanged);
+		}
+	return Super::Initialize();
 }
 
 void UKP_PlayerUIWidget::SetHealthPercent(float HealthPercent)

@@ -4,27 +4,36 @@
 #include "UI/KP_GameHUD.h"
 #include "KProjectGameModeBase.h"
 #include "Blueprint/UserWidget.h"
+#include "Player/KP_BaseCharacter.h"
+#include "QuestList.h"
+#include "KP_Utils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogGameHUD, All, All);
+
+UUserWidget* AKP_GameHUD::CreateWidgetByClass(const TSubclassOf<UUserWidget> WidgetClass, const EGameWidgetState State, const int32 ZOrder)
+{
+	CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), WidgetClass);
+	if (CurrentWidget)
+	{
+		if (State == EGameWidgetState::QuestList)
+		{
+			const auto Player = Cast<AKP_BaseCharacter>(GetOwningPawn());
+			const auto QuestList = Cast<UQuestList>(CurrentWidget);
+			QuestList->Init(KP_Utils::GetPlayerComponent<UQuestListComponent>(Player));
+		}
+		CurrentWidget->AddToViewport(ZOrder);
+	}
+	return CurrentWidget;
+}
 
 void AKP_GameHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GameWidgets.Add(EGameState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
-	GameWidgets.Add(EGameState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-	GameWidgets.Add(EGameState::InPlayerMenu, CreateWidget<UUserWidget>(GetWorld(), PlayerMenuWidgetClass));
-	GameWidgets.Add(EGameState::WaitingToStart, CreateWidget<UUserWidget>(GetWorld(), LoadingScreenWidgetClass));
-	GameWidgets.Add(EGameState::Death, CreateWidget<UUserWidget>(GetWorld(), DeathWidgetClass));
-	GameWidgets.Add(EGameState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
-
-	for (auto GameWidgetPair : GameWidgets)
+	TSubclassOf<UUserWidget>* GameWidgetClass = GameWidgets.Find(EGameWidgetState::InProgress);
+	if (GameWidgetClass && *GameWidgetClass)
 	{
-		const auto GameWidget = GameWidgetPair.Value;
-		if(!GameWidget) continue;
-
-		GameWidget->AddToViewport();
-		GameWidget->SetVisibility(ESlateVisibility::Hidden);
+		CreateWidgetByClass(*GameWidgetClass, EGameWidgetState::InProgress);
 	}
 
 	if (GetWorld())
@@ -37,22 +46,29 @@ void AKP_GameHUD::BeginPlay()
 	}
 }
 
-void AKP_GameHUD::OnGameStateChanged(EGameState State)
+UUserWidget* AKP_GameHUD::ShowWidget(const EGameWidgetState WidgetID, const int32 ZOrder)
+{
+	TSubclassOf<UUserWidget>* MenuWidgetClass = GameWidgets.Find(WidgetID);
+	if (MenuWidgetClass && *MenuWidgetClass)
+	{
+		CreateWidgetByClass(*MenuWidgetClass, WidgetID, ZOrder);
+	}
+	return CurrentWidget;
+}
+
+void AKP_GameHUD::HideWidget()
 {
 	if (CurrentWidget)
 	{
-		CurrentWidget->SetVisibility(ESlateVisibility::Hidden);
+		CurrentWidget->RemoveFromParent();
+		CurrentWidget = nullptr;
 	}
+}
 
-	if (GameWidgets.Contains(State))
-	{
-		CurrentWidget = GameWidgets[State];
-	}
-
-	if (CurrentWidget)
-	{
-		CurrentWidget->SetVisibility(ESlateVisibility::Visible);
-	}
-
+void AKP_GameHUD::OnGameStateChanged(EGameWidgetState State)
+{
+	HideWidget();
+	ShowWidget(State);
+	
 	UE_LOG(LogGameHUD, Display, TEXT("State: %s"), *UEnum::GetValueAsString(State));
 }

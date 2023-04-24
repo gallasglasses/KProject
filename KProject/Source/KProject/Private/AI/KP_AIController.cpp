@@ -3,6 +3,7 @@
 
 #include "AI/KP_AIController.h"
 #include "AI/KP_AIBaseEnemyCharacter.h"
+#include "AI/KP_AICharacter.h"
 #include "Components/KP_AIPerceptionComponent.h"
 
 #include "BehaviorTree/BlackBoardComponent.h"
@@ -83,10 +84,17 @@ void AKP_AIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	const auto KP_AIBaseCharacter = Cast<AKP_AIBaseEnemyCharacter>(InPawn);
-	if (KP_AIBaseCharacter)
+	const auto AIBaseCharacter = Cast<AKP_AIBaseEnemyCharacter>(InPawn);
+	if (AIBaseCharacter)
 	{
-		RunBehaviorTree(KP_AIBaseCharacter->BehaviorTreeAsset);
+		RunBehaviorTree(AIBaseCharacter->BehaviorTreeAsset);
+		return;
+	}
+	const auto NPCCharacter = Cast<AKP_AICharacter>(InPawn);
+	if (NPCCharacter)
+	{
+		RunBehaviorTree(NPCCharacter->BehaviorTreeAsset);
+		return;
 	}
 }
 

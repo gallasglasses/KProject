@@ -3,12 +3,22 @@
 
 #include "Player/KP_PlayerController.h"
 #include "Player/KP_BaseCharacter.h"
+#include "UI/KP_GameHUD.h"
 #include "KProjectGameModeBase.h"
 #include "GameFramework/GameModeBase.h"
+#include "QuestList.h"
+
+DEFINE_LOG_CATEGORY_STATIC(KP_PlayerControllerLog, All, All);
 
 AKP_PlayerController::AKP_PlayerController()
 {
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+bool AKP_PlayerController::SetPause(bool bPause, FCanUnpause CanUnpauseDelegate)
+{
+	const auto PauseSet = Super::SetPause(bPause, CanUnpauseDelegate);
+	return PauseSet;
 }
 
 void AKP_PlayerController::SetupInputComponent()
@@ -17,6 +27,7 @@ void AKP_PlayerController::SetupInputComponent()
 	if (!InputComponent) return;
 
 	InputComponent->BindAction("PauseMenuGame", IE_Pressed, this, &AKP_PlayerController::OnPauseGame);
+	InputComponent->BindAction("ToggleQuestList", IE_Pressed, this, &AKP_PlayerController::ToggleQuestList);
 }
 
 void AKP_PlayerController::BeginPlay()
@@ -59,6 +70,22 @@ void AKP_PlayerController::OnPauseGame()
 	 */
 }
 
+void AKP_PlayerController::ToggleQuestList()
+{
+
+	UE_LOG(KP_PlayerControllerLog, Display, TEXT("*******************************"));
+	if (!GetWorld() || !GetWorld()->GetAuthGameMode()) return;
+
+	const auto PlayerHUD = Cast<AKP_GameHUD>(GetHUD());
+	const auto GameMode = Cast<AKProjectGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (GameMode)
+	{
+		GameMode->SetQuestList(this);
+	}
+
+	UE_LOG(KP_PlayerControllerLog, Display, TEXT("Turn on QuestList"));
+}
+
 void AKP_PlayerController::OnDead()
 {
 	if (!GetWorld() || !GetWorld()->GetAuthGameMode()) return;
@@ -69,16 +96,16 @@ void AKP_PlayerController::OnDead()
 	}
 }
 
-void AKP_PlayerController::OnGameStateChanged(EGameState State)
+void AKP_PlayerController::OnGameStateChanged(EGameWidgetState State)
 {
-	if (State == EGameState::InProgress)
+	if (State == EGameWidgetState::InProgress)
 	{
 		SetInputMode(FInputModeGameOnly());
 		bShowMouseCursor = false;
 	}
 	else
 	{
-		SetInputMode(FInputModeUIOnly());
+		SetInputMode(FInputModeGameAndUI());
 		bShowMouseCursor = true;
 	}
 }

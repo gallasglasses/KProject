@@ -18,9 +18,9 @@ void UKP_GameOverWidget::NativeOnInitialized()
 	}
 }
 
-void UKP_GameOverWidget::OnGameStateChanged(EGameState State)
+void UKP_GameOverWidget::OnGameStateChanged(EGameWidgetState State)
 {
-	if (State == EGameState::GameOver)
+	if (State == EGameWidgetState::GameOver)
 	{
 		//TODO: maybe show game ending credits
 		ShowGameEndingCredits();

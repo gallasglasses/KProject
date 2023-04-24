@@ -25,25 +25,25 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 		UTextBlock* DeathText;
 
-	UPROPERTY(meta = (BindWidget))
-		UButton* LoadLastSaveButton;
+	//UPROPERTY(meta = (BindWidget))
+	//	UButton* LoadLastSaveButton;
 
-	UPROPERTY(meta = (BindWidget))
-		UTextBlock* LoadLastSaveText;
+	//UPROPERTY(meta = (BindWidget))
+	//	UTextBlock* LoadLastSaveText;
 
-	UPROPERTY(meta = (BindWidget))
-		UButton* LoadSavedButton;
+	//UPROPERTY(meta = (BindWidget))
+	//	UButton* LoadSavedButton;
 
-	UPROPERTY(meta = (BindWidget))
-		UTextBlock* LoadSavedText;
+	//UPROPERTY(meta = (BindWidget))
+	//	UTextBlock* LoadSavedText;
 
 private:
 
-	UFUNCTION()
+	/*UFUNCTION()
 	void LoadMostRecentSave();
 
 	UFUNCTION()
-	void LoadSaved();
+	void LoadSaved();*/
 
 	UFUNCTION()
 	void OnRestartGame();

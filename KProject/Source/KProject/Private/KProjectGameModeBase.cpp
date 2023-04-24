@@ -24,7 +24,7 @@ void AKProjectGameModeBase::StartPlay()
 	//SpawnBots();
 
 	StartGame();
-	SetGameState(EGameState::InProgress);
+	SetGameState(EGameWidgetState::InProgress);
 }
 
 bool AKProjectGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
@@ -32,7 +32,18 @@ bool AKProjectGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpau
 	const auto PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
 	if (PauseSet)
 	{
-		SetGameState(EGameState::Pause);
+		SetGameState(EGameWidgetState::Pause);
+	}
+
+	return PauseSet;
+}
+
+bool AKProjectGameModeBase::SetQuestList(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+	const auto PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
+	if (PauseSet)
+	{
+		SetGameState(EGameWidgetState::QuestList);
 	}
 
 	return PauseSet;
@@ -43,7 +54,7 @@ bool AKProjectGameModeBase::ClearPause()
 	const auto PauseCleared = Super::ClearPause();
 	if (PauseCleared)
 	{
-		SetGameState(EGameState::InProgress);
+		SetGameState(EGameWidgetState::InProgress);
 	}
 
 	return PauseCleared;
@@ -62,7 +73,7 @@ void AKProjectGameModeBase::Dead()
 		}
 	}
 
-	SetGameState(EGameState::Death);
+	SetGameState(EGameWidgetState::Death);
 }
 
 void AKProjectGameModeBase::GameOver()
@@ -78,7 +89,7 @@ void AKProjectGameModeBase::GameOver()
 		}
 	}
 
-	SetGameState(EGameState::GameOver);
+	SetGameState(EGameWidgetState::GameOver);
 }
 
 void AKProjectGameModeBase::StartGame()
@@ -97,7 +108,7 @@ void AKProjectGameModeBase::GameTimerTestUpdate()
 	GetWorldTimerManager().ClearTimer(GameOverTestTimer);
 }
 
-void AKProjectGameModeBase::SetGameState(EGameState State)
+void AKProjectGameModeBase::SetGameState(EGameWidgetState State)
 {
 	if (GameState == State) return;
 

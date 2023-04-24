@@ -13,6 +13,11 @@ class UKP_HealthComponent;
 class UKP_StaminaComponent;
 class UKP_ManaComponent;
 class AKP_Shield;
+class UInteractionComponent;
+class UCollectionComponent;
+class UKillingComponent;
+class UQuestListComponent;
+class UQuestList;
 
 class UAnimMontage;
 class UBoxComponent; 
@@ -66,6 +71,18 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UWidgetComponent* HealthWidgetComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UInteractionComponent* InteractionComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UCollectionComponent* CollectionComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Components")
+		UKillingComponent* KillingComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+		UQuestListComponent* QuestListComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animations")
 	UAnimMontage* DeathAnimMontage;
 
@@ -97,6 +114,17 @@ protected:
 	EBehaviorType InitialTeam = EBehaviorType::Neutral;
 	
 	virtual void BeginPlay() override;
+
+
+	/*UFUNCTION(BlueprintCallable)
+		void ToggleQuestListVisibility();*/
+
+	UPROPERTY()
+		UQuestList* QuestList;
+
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<UQuestList> QuestListClass;
+
 
 public:	
 	virtual void Tick(float DeltaTime) override;

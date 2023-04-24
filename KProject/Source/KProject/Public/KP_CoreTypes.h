@@ -22,12 +22,13 @@ enum class EBehaviorType : uint8
 };
 
 UENUM(BlueprintType)
-enum class EGameState : uint8
+enum class EGameWidgetState : uint8
 {
 	WaitingToStart = 0,
 	InProgress,
 	Pause,
-	InPlayerMenu,
+	PlayerMenu,
+	QuestList,
 	Death,
 	GameOver
 };
@@ -54,7 +55,7 @@ enum class EGameLocation : uint8
 //	fi UMETA(DisplayName = "Suomi")
 //};
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EGameState);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameStateChangedSignature, EGameWidgetState);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnGameLocationChangedSignature, EGameLocation);
 
 USTRUCT(BlueprintType)

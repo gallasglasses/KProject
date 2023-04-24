@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "KillableObject.h"
 #include "KP_AIBaseEnemyCharacter.generated.h"
 
 class UKP_HealthComponent;
@@ -17,7 +18,7 @@ class UBoxComponent;
 class UWidgetComponent;
 
 UCLASS()
-class KPROJECT_API AKP_AIBaseEnemyCharacter : public ACharacter
+class KPROJECT_API AKP_AIBaseEnemyCharacter : public ACharacter, public IKillableObject
 {
 	GENERATED_BODY()
 
@@ -42,10 +43,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 		float GetMovementDirection() const;
 
+	UFUNCTION(BlueprintCallable)
+		void OnKillingFinished(AActor* ActorKilledObject);
+
+	UFUNCTION()
+		void OnDestroyKillableActor(AActor* Actor);
+
 	void OnStartAttacking();
 	void OnStopAttacking();
 
 	bool CanAttack() const;
+
+	virtual void Kill_Implementation(AActor* InteractInstigator) override;
 
 protected:
 
@@ -83,9 +92,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage", meta = (EditCondition = "!HasSpawnWeapon"))
 		float AttackRange = 0.f;
 
+	UPROPERTY(EditDefaultsOnly)
+		TSubclassOf<AKP_AIBaseEnemyCharacter> KillableActorClass;
+
 	virtual void BeginPlay() override;
 
-	virtual void OnDeath();
+	virtual void OnDeath(AActor* Killer);
 
 	bool bIsAttacking = false;
 	bool bIsDamageDone = false;
@@ -113,6 +125,7 @@ private:
 	void OnHealthChanged(float Health, float HealthDelta);
 	void OnPlayAnimMontage(int8 Count);
 	void StopAttack();
+	void AIDestroy();
 	virtual void MeleeAttack();
 	virtual void Attacking();
 

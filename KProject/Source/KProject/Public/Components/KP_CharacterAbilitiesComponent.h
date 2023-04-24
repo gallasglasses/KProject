@@ -29,11 +29,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 		FName AbilitySocketName = "spine_01";
 
+	UPROPERTY(BlueprintReadOnly, Category = "Ability")
+		AKP_Shield* Shield = nullptr;
 
 	virtual void BeginPlay() override;
 
 private:
 
-	UPROPERTY()
-		AKP_Shield* Shield = nullptr;
 };

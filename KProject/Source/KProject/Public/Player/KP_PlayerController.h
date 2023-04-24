@@ -16,15 +16,17 @@ public:
 
 	AKP_PlayerController();
 
+	virtual bool SetPause(bool bPause, FCanUnpause CanUnpauseDelegate = FCanUnpause()) override;
 protected:
 
 	virtual void SetupInputComponent() override;
 	virtual void BeginPlay() override;
 
 	void OnPauseGame();
+	void ToggleQuestList();
 
 private:
 	
-	void OnGameStateChanged(EGameState State);
+	void OnGameStateChanged(EGameWidgetState State);
 	void OnDead();
 };

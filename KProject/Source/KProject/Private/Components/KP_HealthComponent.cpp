@@ -7,6 +7,7 @@
 //#include "Damaging/KP_IceDamageType.h"
 //#include "Damaging/KP_FireDamageType.h"
 #include "KP_Utils.h"
+#include "KillableObject.h"
 
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
@@ -54,9 +55,13 @@ void UKP_HealthComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, co
 
 	GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 
-	if (IsDead())
+	if (IsDead() && CharacterDamaged)
 	{
 		OnDeath.Broadcast();
+	}
+	else if (IsDead())
+	{
+		OnDeathByInstigator.Broadcast(DamagedActor);
 	}
 	else if (AutoHeal)
 	{

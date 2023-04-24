@@ -3,6 +3,7 @@
 #include "AI/KP_AIFactory.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Components/ArrowComponent.h"
+#include "QuestSubsystem.h"
 
 DEFINE_LOG_CATEGORY_STATIC(AIFactoryLog, All, All);
 
@@ -34,6 +35,7 @@ void AKP_AIFactory::SpawnActors()
 	UE_LOG(AIFactoryLog, Display, TEXT("SpawnedActorsCount: %i"), SpawnedActorsCount);
 	FTransform SpawnTransform(SpawnPoint->GetComponentRotation(), SpawnPoint->GetComponentLocation(), FVector(1.f));
 	const auto KP_AIActor = GetWorld()->SpawnActorDeferred<APawn>(AIPawnClass, SpawnTransform, this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+	
 	KP_AIActor->FinishSpawning(SpawnTransform);	
 	
 	if (SpawnedActorsCount + 1 < AIPlayersNum ) //GameData.AIPlayersNum

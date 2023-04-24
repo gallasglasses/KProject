@@ -2,6 +2,9 @@
 
 #include "AI/KP_AIBaseEnemyCharacter.h"
 #include "AI/KP_AIController.h"
+#include "Player/KP_BaseCharacter.h"
+
+#include "QuestSubsystem.h"
 
 #include "Components/KP_AIMovementComponent.h"
 #include "Components/KP_HealthComponent.h"
@@ -58,6 +61,8 @@ AKP_AIBaseEnemyCharacter::AKP_AIBaseEnemyCharacter(const FObjectInitializer& Obj
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	
+	//OnDestroyed.AddDynamic(this, &ThisClass::OnDestroyAKillableActor);
 }
 
 bool AKP_AIBaseEnemyCharacter::IsRunning() const
@@ -75,13 +80,16 @@ void AKP_AIBaseEnemyCharacter::BeginPlay()
 	check(WeaponComponent);
 
 	OnHealthChanged(HealthComponent->GetHealth(), 0.0f);
-	HealthComponent->OnDeath.AddUObject(this, &AKP_AIBaseEnemyCharacter::OnDeath);
+	HealthComponent->OnDeathByInstigator.AddUObject(this, &AKP_AIBaseEnemyCharacter::OnDeath);
 	HealthComponent->OnHealthChanged.AddUObject(this, &AKP_AIBaseEnemyCharacter::OnHealthChanged);
 
 	WeaponComponent->OnWantToStartAttack.AddUObject(this, &AKP_AIBaseEnemyCharacter::OnStartAttacking);
 	WeaponComponent->OnWantToStopAttack.AddUObject(this, &AKP_AIBaseEnemyCharacter::OnStopAttacking);
 
 	LandedDelegate.AddDynamic(this, &AKP_AIBaseEnemyCharacter::OnGroundLanded);
+
+	auto QuestSubsystem = GetWorld()->GetSubsystem<UQuestSubsystem>();
+	QuestSubsystem->AddQuestActor(this, KillableActorClass);
 }
 
 void AKP_AIBaseEnemyCharacter::Tick(float DeltaTime)
@@ -100,6 +108,30 @@ bool AKP_AIBaseEnemyCharacter::CanAttack() const
 	return !HealthComponent->IsDead();
 }
 
+void AKP_AIBaseEnemyCharacter::Kill_Implementation(AActor* InteractInstigator)
+{
+	if (InteractInstigator == nullptr)
+	{
+		return;
+	}
+	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Kill_Implementation"));
+	
+	if (HealthComponent->IsDead() && InteractInstigator)
+	{
+		NotifyKillingFinished(this, InteractInstigator);
+		if (HasAnimMontage)
+		{
+			UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("DeathAnimMontage"));
+			PlayAnimMontage(DeathAnimMontage);
+			SetLifeSpan(DeathAnimMontage->CalculateSequenceLength() - 0.5f);
+		}
+		else
+		{
+			SetLifeSpan(1.f);
+		}
+	}
+}
+
 float AKP_AIBaseEnemyCharacter::GetMovementDirection() const
 {
 	if (GetVelocity().IsZero()) return 0.0f;
@@ -109,6 +141,17 @@ float AKP_AIBaseEnemyCharacter::GetMovementDirection() const
 	const auto CrossProduct = FVector::CrossProduct(GetActorForwardVector(), VelocityNormal);
 
 	return FMath::RadiansToDegrees(AngleBetween) * FMath::Sign(CrossProduct.Z);
+}
+
+void AKP_AIBaseEnemyCharacter::OnKillingFinished(AActor* ActorKilledObject)
+{
+	NotifyKillingFinished(this, ActorKilledObject);
+}
+
+void AKP_AIBaseEnemyCharacter::OnDestroyKillableActor(AActor* Actor)
+{
+	auto QuestSubsystem = GetWorld()->GetSubsystem<UQuestSubsystem>();
+	QuestSubsystem->RemoveQuestActor(Actor);
 }
 
 void AKP_AIBaseEnemyCharacter::OnStartAttacking()
@@ -141,7 +184,7 @@ void AKP_AIBaseEnemyCharacter::Block()
 
 }
 
-void AKP_AIBaseEnemyCharacter::OnDeath()
+void AKP_AIBaseEnemyCharacter::OnDeath(AActor* Killer)
 {
 	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("%s, You are dead"), *GetName());
 	const auto AIController = Cast<AKP_AIController>(Controller);
@@ -150,20 +193,15 @@ void AKP_AIBaseEnemyCharacter::OnDeath()
 		UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("BrainComponent->Cleanup"));
 		AIController->BrainComponent->Cleanup();
 	}
-	if (HasAnimMontage)
-	{
-		UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("DeathAnimMontage"));
-		PlayAnimMontage(DeathAnimMontage);
-		SetLifeSpan(DeathAnimMontage->CalculateSequenceLength() - 0.5f);
-	}
-	else
-	{
-		SetLifeSpan(1.f);
-	}
 	
 	GetCharacterMovement()->DisableMovement(); //UCharacterMovementComponent * GetCharacterMovement() const
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	WeaponComponent->OnWantToStop();
+	
+	if (!Cast<AKP_BaseCharacter>(Killer))
+	{
+		AIDestroy();
+	}
 }
 
 void AKP_AIBaseEnemyCharacter::OnHealthChanged(float Health, float HealthDelta)
@@ -263,5 +301,19 @@ void AKP_AIBaseEnemyCharacter::StopAttack()
 	if (HasAnimMontage)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandle);
+	}
+}
+
+void AKP_AIBaseEnemyCharacter::AIDestroy()
+{
+	if (HasAnimMontage)
+	{
+		UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("DeathAnimMontage"));
+		PlayAnimMontage(DeathAnimMontage);
+		SetLifeSpan(DeathAnimMontage->CalculateSequenceLength() - 0.5f);
+	}
+	else
+	{
+		SetLifeSpan(1.f);
 	}
 }

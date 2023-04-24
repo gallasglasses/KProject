@@ -13,37 +13,31 @@ UCLASS()
 class KPROJECT_API AKP_GameHUD : public AHUD
 {
 	GENERATED_BODY()
-	
+
 protected: 
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
+	UUserWidget* CreateWidgetByClass(const TSubclassOf<UUserWidget> GameWidgetClass, const EGameWidgetState State, const int32 ZOrder = 0);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> PauseWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> PlayerMenuWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> LoadingScreenWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> DeathWidgetClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<UUserWidget> GameOverWidgetClass;
+		TMap<EGameWidgetState, TSubclassOf<UUserWidget>> GameWidgets;
 
 	virtual void BeginPlay() override;
 
+	UPROPERTY()
+		UUserWidget* CurrentWidget;
+
+public:
+
+	UFUNCTION(BlueprintCallable)
+		UUserWidget* GetCurrentWidget() const { return CurrentWidget; };
+
+	UFUNCTION(BlueprintCallable)
+		UUserWidget* ShowWidget(const EGameWidgetState WidgetID, const int32 ZOrder = 0);
+
+	UFUNCTION(BlueprintCallable)
+		void HideWidget();
+
 private:
-	
-	UPROPERTY()
-	TMap<EGameState, UUserWidget*> GameWidgets;
 
-	UPROPERTY()
-	UUserWidget* CurrentWidget = nullptr;
-
-
-	void OnGameStateChanged(EGameState State);
+	void OnGameStateChanged(EGameWidgetState State);
 };

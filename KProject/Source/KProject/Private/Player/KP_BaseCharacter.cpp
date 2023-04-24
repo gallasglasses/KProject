@@ -10,6 +10,13 @@
 #include "Components/KP_ManaComponent.h"
 #include "UI/KP_HealthBarWidget.h"
 
+#include "InteractionComponent.h"
+#include "CollectionComponent.h"
+#include "KillingComponent.h"
+#include "QuestListComponent.h"
+#include "QuestList.h"
+#include "KillableObject.h"
+
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
@@ -18,7 +25,8 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
 
@@ -70,6 +78,17 @@ AKP_BaseCharacter::AKP_BaseCharacter(const FObjectInitializer& ObjInit)
 	SwordTriggerHitComponent->OnComponentBeginOverlap.AddDynamic(this, &AKP_BaseCharacter::OnOverlapHit);
 	SwordTriggerHitComponent->IgnoreActorWhenMoving(GetOwner(), true);
 
+	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>("InteractionComponent");
+	InteractionComponent->SetupAttachment(GetRootComponent());
+
+	CollectionComponent = CreateDefaultSubobject<UCollectionComponent>("CollectionComponent");
+	CollectionComponent->SetupAttachment(GetRootComponent());
+
+	KillingComponent = CreateDefaultSubobject<UKillingComponent>("KillingComponent");
+	KillingComponent->SetupAttachment(GetRootComponent());
+
+	QuestListComponent = CreateDefaultSubobject<UQuestListComponent>("QuestListComponent");
+
 	SetGenericTeamId(FGenericTeamId((int32)InitialTeam));
 }
 
@@ -102,6 +121,29 @@ void AKP_BaseCharacter::BeginPlay()
 	//PlayAnimMontage(LevelStartAnimMontage);
 }
 
+//void AKP_BaseCharacter::ToggleQuestListVisibility()
+//{
+//	APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+//
+//	if (QuestList)
+//	{
+//		QuestList->RemoveFromParent();
+//		QuestList = nullptr;
+//		UWidgetBlueprintLibrary::SetInputMode_GameOnly(PC);
+//	}
+//	else
+//	{
+//		if (QuestListClass)
+//		{
+//			QuestList = CreateWidget<UQuestList>(GetWorld(), QuestListClass);
+//			QuestList->Init(QuestListComponent);
+//			QuestList->AddToViewport();
+//			UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(PC);
+//			PC->SetShowMouseCursor(true);
+//		}
+//	}
+//}
+
 void AKP_BaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -118,6 +160,9 @@ void AKP_BaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("LookUp", this, &AKP_BaseCharacter::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AKP_BaseCharacter::Jump);
+	//PlayerInputComponent->BindAction("ToggleQuestList", IE_Pressed, this, &AKP_BaseCharacter::ToggleQuestListVisibility);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, InteractionComponent, &UInteractionComponent::Interact);
+	PlayerInputComponent->BindAction("Collect", IE_Pressed, CollectionComponent, &UCollectionComponent::Collect);
 	PlayerInputComponent->BindAction("MeleeAttack", IE_Pressed, this, &AKP_BaseCharacter::MeleeAttack);
 	PlayerInputComponent->BindAction("Block", IE_Pressed, this, &AKP_BaseCharacter::Block);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &AKP_BaseCharacter::OnStartRunning);
@@ -182,6 +227,7 @@ void AKP_BaseCharacter::OnOverlapHit(UPrimitiveComponent* OverlappedComp, AActor
 			return;
 		}
 		UE_LOG(BaseCharacterLog, Display, TEXT("%s, you got damage"), *SweepResult.GetActor()->GetName());
+		
 		MakeDamage(SweepResult);
 	}
 }
@@ -318,6 +364,11 @@ void AKP_BaseCharacter::MakeDamage(const FHitResult& HitResult)
 	{
 		HitActor->TakeDamage(WeaponDamageAmount, FDamageEvent{}, GetPlayerController(), this);
 		bIsDamageDone = true;
+		if (HitActor->Implements<UKillableObject>())
+		{
+			//KillingComponent->ActorToKill = HitActor;
+			KillingComponent->Kill();
+		}
 	}
 }
 

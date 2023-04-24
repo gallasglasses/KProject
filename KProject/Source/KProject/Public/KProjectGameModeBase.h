@@ -24,6 +24,8 @@ public:
 
 	virtual bool SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate = FCanUnpause()) override;
 
+	bool SetQuestList(APlayerController* PC, FCanUnpause CanUnpauseDelegate = FCanUnpause());
+
 	virtual bool ClearPause() override;
 
 	void Dead();
@@ -44,7 +46,7 @@ public:
 
 private:
 
-	EGameState GameState = EGameState::WaitingToStart;
+	EGameWidgetState GameState = EGameWidgetState::WaitingToStart;
 
 	FTimerHandle GameOverTestTimer;// for test only
 
@@ -53,7 +55,7 @@ private:
 
 	void GameTimerTestUpdate(); // for test only
 
-	void SetGameState(EGameState State);
+	void SetGameState(EGameWidgetState State);
 
 //	void SpawnBots();
 };

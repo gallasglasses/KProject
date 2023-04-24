@@ -17,30 +17,34 @@ public class KProject : ModuleRules
             "SlateCore",
             "Slate" ,
             "GameplayTasks",
-            "NavigationSystem"
+            "NavigationSystem",
+            "QuestSystem"
         });
 
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
+		PrivateDependencyModuleNames.AddRange(new string[] 
+        {
+            "QuestSystem"
+        });
 
 		PublicIncludePaths.AddRange(new string[] 
 		{ 
-		"KProject/Public/Player",
-        "KProject/Public/Components",
-        "KProject/Public/Damaging",
-        "KProject/Public/UI",
-        "KProject/Public/Menu",
-        "KProject/Public/Menu/UI",
-        "KProject/Public/Pickups",
-        "KProject/Public/AI",
-        "KProject/Public/AI/EQS",
-        "KProject/Public/AI/Enemies/Animals",
-        "KProject/Public/AI/Enemies/People",
-        "KProject/Public/AI/Tasks",
-        "KProject/Public/AI/Services",
-        "KProject/Public/Weapons",
-        "KProject/Public/Abilities",
-        "KProject/Public/Sound",
-        "KProject/Public/"
+		    "KProject/Public/Player",
+            "KProject/Public/Components",
+            "KProject/Public/Damaging",
+            "KProject/Public/UI",
+            "KProject/Public/Menu",
+            "KProject/Public/Menu/UI",
+            "KProject/Public/Pickups",
+            "KProject/Public/AI",
+            "KProject/Public/AI/EQS",
+            "KProject/Public/AI/Enemies/Animals",
+            "KProject/Public/AI/Enemies/People",
+            "KProject/Public/AI/Tasks",
+            "KProject/Public/AI/Services",
+            "KProject/Public/Weapons",
+            "KProject/Public/Abilities",
+            "KProject/Public/Sound",
+            "KProject/Public/"
         });
 
 		// Uncomment if you are using Slate UI

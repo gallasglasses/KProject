@@ -27,6 +27,6 @@ protected:
 
 private:
 
-	void OnGameStateChanged(EGameState State);
+	void OnGameStateChanged(EGameWidgetState State);
 	void ShowGameEndingCredits();
 };
