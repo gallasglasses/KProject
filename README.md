@@ -10,6 +10,7 @@ The world of Kalevala is also a place of great conflict, where the forces of goo
 In general, the world of Kalevala is a rich and complex canvas of mythology, nature and culture.
 
 ![Alt-текст](https://raw.githubusercontent.com/gallasglasses/KProject/main/Kalevala_Map.jpg "Map: Kalevala")
+(The map is shown as a rough representation of the game world.)
 
 ***Kalevala*** is the land of people, the land of heroes.
 Kalevala is a fertile and prosperous land rich in forests, lakes and rivers. It is also portrayed as a place of great cultural significance, where traditions of singing and poetry flourish. The people of Kalevala are proud of their heritage and their ability to create powerful songs and spells that they use to solve problems, celebrate important events and honor their ancestors.
