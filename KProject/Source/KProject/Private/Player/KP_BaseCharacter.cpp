@@ -278,8 +278,10 @@ void AKP_BaseCharacter::OnStartRunning()
 {
 	bWantsToRun = true;
 	bIsRunning = true;
-
-	OnGiveAnyStamina.Broadcast(bIsRunning);
+	if (bIsMoving)
+	{
+		OnGiveAnyStamina.Broadcast(bIsRunning);
+	}
 }
 
 void AKP_BaseCharacter::OnStopRunning()
@@ -367,7 +369,7 @@ void AKP_BaseCharacter::MakeDamage(const FHitResult& HitResult)
 		if (HitActor->Implements<UKillableObject>())
 		{
 			//KillingComponent->ActorToKill = HitActor;
-			KillingComponent->Kill();
+			KillingComponent->Kill(HitActor);
 		}
 	}
 }

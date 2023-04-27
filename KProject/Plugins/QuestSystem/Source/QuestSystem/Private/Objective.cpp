@@ -125,6 +125,7 @@ void UKillableObjective::ActivateObjective(AActor* Instigator)
 		{
 			KillableTarget->OnKillingFinished.AddLambda([this, Instigator](AActor* Object, AActor* KillableInstigator)
 				{
+					UE_LOG(LogTemp, Display, TEXT("Instigator %s, InteractInstigator %s"), *Instigator->GetName(), *KillableInstigator->GetName());
 					if (bCanBeCompleted && Instigator == KillableInstigator)
 					{
 						if (++KilledCount >= TargetCount)
@@ -146,6 +147,7 @@ void UKillableObjective::ActivateObjective(AActor* Instigator)
 		}
 		else
 		{
+			//UE_LOG(LogTemp, Display, TEXT("NOOOOOOOOT IKillableObject"));
 		}
 	}
 }

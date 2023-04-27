@@ -25,7 +25,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY()
-		AActor* ActorToKill;
+		TArray <AActor*> ActorToKill;
+
 
 	UFUNCTION()
 		void OnKillingCompBeginOverlap(UPrimitiveComponent* OverlappedComponent,
@@ -37,6 +38,6 @@ public:
 			AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION(BlueprintCallable)
-		void Kill();
+		void Kill(AActor* KillableActor);
 		
 };

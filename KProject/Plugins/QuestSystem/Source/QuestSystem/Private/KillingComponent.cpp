@@ -27,26 +27,32 @@ void UKillingComponent::OnKillingCompBeginOverlap(UPrimitiveComponent* Overlappe
 {
 	if (OtherActor->Implements<UKillableObject>())
 	{
-		ActorToKill = OtherActor;
-		UE_LOG(LogTemp, Display, TEXT("OnKillingCompBeginOverlap"));
-
+		//ActorToKill = OtherActor;
+		ActorToKill.Add(OtherActor);
+		UE_LOG(LogTemp, Display, TEXT("OnKillingCompBeginOverlap, ActorToKill: %s"), *OtherActor->GetName());
 	}
 }
 
 void UKillingComponent::OnKillingCompEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	
+	if (ActorToKill.Find(OtherActor))
+	{
+		ActorToKill.Remove(OtherActor);
+	}
 	/*ActorToKill = nullptr;
 	UE_LOG(LogTemp, Display, TEXT("ActorToKill = nullptr"));*/
 
 }
 
-void UKillingComponent::Kill()
+void UKillingComponent::Kill(AActor* KillableActor)
 {
-	if (ActorToKill)
+	if (ActorToKill.Find(KillableActor))
 	{
 		UE_LOG(LogTemp, Display, TEXT(" UKillingComponent::Kill()"));
-		IKillableObject::Execute_Kill(ActorToKill, GetOwner());
+		IKillableObject::Execute_Kill(KillableActor, GetOwner());
+		ActorToKill.Remove(KillableActor);
 	}
-	ActorToKill = nullptr;
+	//ActorToKill = nullptr;
 }
 

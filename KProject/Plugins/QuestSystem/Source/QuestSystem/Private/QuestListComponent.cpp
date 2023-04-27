@@ -34,7 +34,7 @@ void UQuestListComponent::AddQuest(AQuest* Quest)
 	{
 		return;
 	}
-	if (ActiveQuest->IsCompleted() || ActiveQuest == nullptr)
+	if (ActiveQuest == nullptr || ActiveQuest->IsCompleted())
 	{
 		ActiveQuest = Quest;
 		OnActiveQuestChanged.Broadcast(ActiveQuest);

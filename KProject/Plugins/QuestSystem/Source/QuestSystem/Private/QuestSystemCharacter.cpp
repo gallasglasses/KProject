@@ -139,7 +139,7 @@ void AQuestSystemCharacter::Interact_Implementation(AActor* InteractInstigator)
 				continue;
 			}
 
-			if (Quest->bIsTaken && Quest->IsCompleted() || (Quest->PreviousQuest && !Quest->PreviousQuest->IsCompleted()))
+			if (Quest->bIsTaken || Quest->IsCompleted() || (Quest->PreviousQuest && !Quest->PreviousQuest->IsCompleted()))
 			{
 				continue;
 			}

@@ -20,6 +20,6 @@ AKP_AIChicken::AKP_AIChicken(const FObjectInitializer& ObjInit):Super(ObjInit)
 void AKP_AIChicken::MeleeAttack()
 {
 	bIsAttacking = true;
-	UE_LOG(AIChickenLog, Display, TEXT("Attacking"));
+	//UE_LOG(AIChickenLog, Display, TEXT("Attacking"));
 	bIsDamageDone = false;
 }

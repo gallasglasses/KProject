@@ -10,6 +10,7 @@
 
 class AAIController;
 class UArrowComponent;
+class UBoxComponent;
 
 UCLASS()
 class KPROJECT_API AKP_AIFactory : public AActor
@@ -26,6 +27,9 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Spawn Components")
 		UArrowComponent* SpawnPoint;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Spawn Components")
+		UBoxComponent* FactoryBox;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawn Parametrs")
 		TSubclassOf<AKP_AIController> AIControllerClass;

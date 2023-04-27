@@ -110,6 +110,7 @@ bool AKP_AIBaseEnemyCharacter::CanAttack() const
 
 void AKP_AIBaseEnemyCharacter::Kill_Implementation(AActor* InteractInstigator)
 {
+	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("InteractInstigator: %s"), *InteractInstigator->GetName());
 	if (InteractInstigator == nullptr)
 	{
 		return;
@@ -121,7 +122,7 @@ void AKP_AIBaseEnemyCharacter::Kill_Implementation(AActor* InteractInstigator)
 		NotifyKillingFinished(this, InteractInstigator);
 		if (HasAnimMontage)
 		{
-			UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("DeathAnimMontage"));
+			//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("DeathAnimMontage"));
 			PlayAnimMontage(DeathAnimMontage);
 			SetLifeSpan(DeathAnimMontage->CalculateSequenceLength() - 0.5f);
 		}
@@ -156,13 +157,13 @@ void AKP_AIBaseEnemyCharacter::OnDestroyKillableActor(AActor* Actor)
 
 void AKP_AIBaseEnemyCharacter::OnStartAttacking()
 {
-	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("On Melee Attack"));
+	//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("On Melee Attack"));
 	MeleeAttack();
 }
 
 void AKP_AIBaseEnemyCharacter::OnStopAttacking()
 {
-	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("On Stop Attack"));
+	//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("On Stop Attack"));
 	StopAttack();
 }
 
@@ -170,11 +171,11 @@ void AKP_AIBaseEnemyCharacter::OnGroundLanded(const FHitResult& Hit)
 {
 	const auto FallVelocityZ = -GetVelocity().Z;
 
-	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("On Ground Landed %f"), FallVelocityZ);
+	//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("On Ground Landed %f"), FallVelocityZ);
 
 	if (FallVelocityZ < LandedDamageVelocity.X) return;
 	const auto FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocityZ);
-	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Final Damage %f"), FinalDamage);
+	//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Final Damage %f"), FinalDamage);
 
 	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
@@ -220,12 +221,12 @@ void AKP_AIBaseEnemyCharacter::MeleeAttack()
 	if (bIsAttacking)
 	{
 		bIsComboAttack = true;
-		UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Attacking yet and save"));
+		//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Attacking yet and save"));
 	}
 	else
 	{
 		bIsAttacking = true;
-		UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Attacking now"));
+		//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Attacking now"));
 		if (HasAnimMontage)
 		{
 			ChooseComboAnimMontage();
@@ -266,7 +267,7 @@ void AKP_AIBaseEnemyCharacter::OnPlayAnimMontage(int8 Count)
 	{
 		PlayAnimMontage(AttackAnimMontages[Count]);
 		GetWorld()->GetTimerManager().SetTimer(AttackTimerHandle, this, &AKP_AIBaseEnemyCharacter::ComboAttackSave, AttackAnimMontages[Count]->CalculateSequenceLength(), false);
-		UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Play Attack %d"), Count);
+		//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Play Attack %d"), Count);
 	}
 }
 
@@ -286,7 +287,7 @@ void AKP_AIBaseEnemyCharacter::ComboAttackSave()
 
 void AKP_AIBaseEnemyCharacter::ResetCombo()
 {
-	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Reset Combo"));
+	//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Reset Combo"));
 	ComboAttackCount = 0;
 	bIsComboAttack = false;
 	StopAttack();
@@ -296,8 +297,8 @@ void AKP_AIBaseEnemyCharacter::StopAttack()
 {
 	bIsAttacking = false;
 	bIsDamageDone = false;
-	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("bIsDamageDone %s"), bIsDamageDone ? TEXT("true") : TEXT("false"));
-	UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Stop Attack"));
+	//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("bIsDamageDone %s"), bIsDamageDone ? TEXT("true") : TEXT("false"));
+	//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("Stop Attack"));
 	if (HasAnimMontage)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandle);
@@ -308,7 +309,7 @@ void AKP_AIBaseEnemyCharacter::AIDestroy()
 {
 	if (HasAnimMontage)
 	{
-		UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("DeathAnimMontage"));
+		//UE_LOG(AIBaseEnemyCharacterLog, Display, TEXT("DeathAnimMontage"));
 		PlayAnimMontage(DeathAnimMontage);
 		SetLifeSpan(DeathAnimMontage->CalculateSequenceLength() - 0.5f);
 	}
