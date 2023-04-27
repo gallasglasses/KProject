@@ -9,7 +9,7 @@ The landscape of Kalevala is vast and varied, including forests, lakes, rivers, 
 The world of Kalevala is also a place of great conflict, where the forces of good and evil are constantly at war. The heroes of "Kalevala" often find themselves in battles with witches, demons and other supernatural beings, using their strength, courage and wisdom to overcome these obstacles.
 In general, the world of Kalevala is a rich and complex canvas of mythology, nature and culture.
 
-![Alt-текст](https://drive.google.com/file/d/1p5yx61YAFRrYWxI2ljjDm2ptmixUeJSZ/view?usp=share_link "Map: Kalevala")
+![Alt-текст](https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fec54f719-6038-4e56-8173-b968b8ea80b0%2FUntitled.jpeg?id=24ddc14f-42a8-495c-aaaa-77af53c2d459&table=block&spaceId=d128b0aa-49a8-4922-97f9-7977eb690374&width=2000&userId=700665b6-e9f5-4c9a-878a-9b753d73744a&cache=v2 "Map: Kalevala")
 
 ***Kalevala*** is the land of people, the land of heroes.
 Kalevala is a fertile and prosperous land rich in forests, lakes and rivers. It is also portrayed as a place of great cultural significance, where traditions of singing and poetry flourish. The people of Kalevala are proud of their heritage and their ability to create powerful songs and spells that they use to solve problems, celebrate important events and honor their ancestors.
