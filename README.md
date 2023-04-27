@@ -73,7 +73,8 @@ Enemy/NPC AI:
 - [ ] 3. Bosses
 - [ ] 4. Animals 
     - [ ] Add more different types (Killable / Neutral)
-- [ ] 5. Factory for Enemy AI with PoolSubSystem?
+- [ ] 5. Factory for Enemy AI
+    - [ ] Factory with PoolSubSystem (because killable actors are binding on objectives in quests at the time of taking, and if quests were taken with this kill-objective, new spawn killable actors doesn't have binding and they won't count. So I need to search/learn more about this situation)
 
 Character:
 - [X] 1. Movement
