@@ -1,7 +1,7 @@
 # KProject
 RPG
 
-
+____
 ### I. Description of the game world
 
 The world of Kalevala is a mythical and magical place inhabited by gods, heroes, witches and other supernatural beings and where the forces of good and evil are constantly at war.
@@ -50,7 +50,7 @@ Slides with pictures or animated comics (Comic Cinematic like in The Witcher 3) 
 ### VIII. Bonus Materials
 
 The ability to complete all additional quests that tell untold moments in the main lore. Perhaps a DLC with "neighborhood" myths.
-
+____
 
 
 UMG UI:
@@ -101,7 +101,7 @@ Level Design
 
 Game Design:
 :sob: I need to learn more about it
-
+____
 
 #### UE Content
 
