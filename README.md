@@ -103,9 +103,6 @@ Game Design:
 :sob: I need to learn more about it
 
 
-UMG UI, Enemy/NPC AI, EQS, Factory Method for Enemy AI, Physics Movement for Projectile, Landscape Design (with Foliage)
-
-
 #### UE Content
 
 I used the UE Content for educational purposes such as :
