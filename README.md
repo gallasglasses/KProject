@@ -1,5 +1,5 @@
 # KProject
-RPG
+Demo-Prototype of fantasy action role-playing game
 
 ____
 ### I. Description of the game world
