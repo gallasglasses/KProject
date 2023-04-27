@@ -53,18 +53,59 @@ The ability to complete all additional quests that tell untold moments in the ma
 
 
 
+UMG UI:
+- [X] 1. Main Menu
+- [X] 2. Quest Menu
+- [X] 3. Pause Menu
+- [ ] 4. Map
+- [ ] 5. Inventory
+- [ ] 6. Skill Tree
+- [ ] 7. Character UI (have only health/stamina/mana progress bars)
+
+Enemy/NPC AI:
+- [X] 1. Enemies
+    - [ ] Add more different types
+    - [ ] Add more different movements/behaviors
+- [X] 2. NPC
+    - [ ] Add more different types
+    - [ ] Add dialogues/phrases  
+    - [ ] Add more different movements/behaviors
+- [ ] 3. Bosses
+- [ ] 4. Animals 
+    - [ ] Add more different types (Killable / Neutral)
+- [ ] 5. Factory for Enemy AI with PoolSubSystem?
+
+Character:
+- [X] 1. Movement
+- [X] 2. Attack
+- [X] 3. Health
+- [ ] 4. Quest System
+- [ ] 5. Inventory
+- [ ] 6. Skill Tree
+- [ ] 7. Abilities
+
+Game:
+- [X] 1. Quest System
+- [ ] 2. Save System
+- [ ] 3. Balance and Enemy Scaling Changes
+- [ ] 4. Progression mechanics
+- [ ] 5. Internal economies
+
+Level Design
+- [X] 1. Ocean/River/Lake
+- [X] 2. Landascape Design
+    - [ ] Add climatic zones, like rain, snow, wind (attaching to character)
+- [X] 3. Foliage
+- [ ] 4. Add unique places (levels), like caves, castle, dungeon
+- [ ] 5. Add interior in houses, interactable chestes, boxes, etc. (inventory system)
+
+Game Design:
+:sob: I need to learn more about it
 
 
+UMG UI, Enemy/NPC AI, EQS, Factory Method for Enemy AI, Physics Movement for Projectile, Landscape Design (with Foliage)
 
 
 #### UE Content
 
 I used the UE Content for educational purposes such as :
-
-[Paragon: Terra](https://www.unrealengine.com/marketplace/en-US/product/paragon-terra?sessionInvalidated=true)
-
-![Alt-текст](https://cdn1.epicgames.com/ue/product/Screenshot/TerraScreenshot3-1920x1080-8d471a8dd9d9c47f1c895ec87969ba3c.png?resize=1&w=1920 "Paragon: Terra")
-
-[Infinity Blade: Ice Lands](https://www.unrealengine.com/marketplace/en-US/product/infinity-blade-ice-lands)
-
-![Alt-текст](https://cdn1.epicgames.com/ue/product/Screenshot/IBIceLandsScreenshot02-1920x1080-70b0965fef3dd34e9554d94b07cd0748-1920x1080-c3ce4b241da459f4d0d01c800e83d8dc.png?resize=1&w=1920 "Infinity Blade: Ice Lands")
