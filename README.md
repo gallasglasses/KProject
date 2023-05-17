@@ -109,4 +109,4 @@ ____
 
 #### UE Content
 
-I used the UE Content for educational purposes such as :
+I used the UE Content for educational purposes
