@@ -102,6 +102,7 @@ Level Design
 - [X] 3. Foliage
 - [ ] 4. Add unique places (levels), like caves, castle, dungeon
 - [ ] 5. Add interior in houses, interactable chestes, boxes, etc. (inventory system)
+- [ ] 6. Open world: load/unload levels maybe by some levels manager (Right now I'm temporarily using only two trigger boxes to load/unload two levels)
 
 Game Design:
 :sob: I need to learn more about it
