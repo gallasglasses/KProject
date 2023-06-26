@@ -141,6 +141,9 @@ public:
 	bool IsBlocking() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
+		bool IsMoving() const;
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")

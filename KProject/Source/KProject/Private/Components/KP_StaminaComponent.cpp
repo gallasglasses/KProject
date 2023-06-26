@@ -33,13 +33,16 @@ void UKP_StaminaComponent::BeginPlay()
 void UKP_StaminaComponent::OnGiveAnyStamina(bool IsStaminaDischarge)
 {
 	if (!GetWorld()) return;
-	if (IsStaminaDischarge)
+	auto ComponentOwner = Cast<AKP_BaseCharacter>(GetOwner());
+	if (!ComponentOwner) return;
+
+	if (IsStaminaDischarge && ComponentOwner->IsRunning())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(StaminaRecoveryTimerHandle);
 
 		GetWorld()->GetTimerManager().SetTimer(StaminaDischargeTimerHandle, this, &UKP_StaminaComponent::StaminaDischargeUpdate, StaminaDischargeUpdateTime, true, StaminaDischargeDelay);
 	}
-	else 
+	else if (!IsStaminaDischarge && !ComponentOwner->IsRunning())
 	{
 		GetWorld()->GetTimerManager().ClearTimer(StaminaDischargeTimerHandle);
 		if (AutoStaminaRecovery)

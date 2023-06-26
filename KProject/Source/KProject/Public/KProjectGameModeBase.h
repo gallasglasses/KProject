@@ -28,7 +28,14 @@ public:
 
 	virtual bool ClearPause() override;
 
+	void StartGame();
 	void Dead();
+
+	UFUNCTION(BlueprintCallable, Category = "Game")
+		void TurnOnGlobalGravitySet();
+
+	UFUNCTION(BlueprintCallable, Category = "Game")
+		void TurnOffGlobalGravitySet();
 
 //	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = Classes)
 //	UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
@@ -51,11 +58,10 @@ private:
 	FTimerHandle GameOverTestTimer;// for test only
 
 	void GameOver();	
-	void StartGame();
 
 	void GameTimerTestUpdate(); // for test only
 
 	void SetGameState(EGameWidgetState State);
-
+	void ResetPlayer();
 //	void SpawnBots();
 };

@@ -147,7 +147,7 @@ void UKillableObjective::ActivateObjective(AActor* Instigator)
 		}
 		else
 		{
-			//UE_LOG(LogTemp, Display, TEXT("NOOOOOOOOT IKillableObject"));
+			UE_LOG(LogTemp, Display, TEXT("NOOOOOOOOT IKillableObject"));
 		}
 	}
 }

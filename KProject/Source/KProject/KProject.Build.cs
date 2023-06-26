@@ -32,6 +32,7 @@ public class KProject : ModuleRules
             "KProject/Public/Components",
             "KProject/Public/Damaging",
             "KProject/Public/UI",
+            "KProject/Public/Loading",
             "KProject/Public/Menu",
             "KProject/Public/Menu/UI",
             "KProject/Public/Pickups",

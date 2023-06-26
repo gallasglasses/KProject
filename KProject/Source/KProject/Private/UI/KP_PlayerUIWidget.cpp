@@ -10,6 +10,7 @@
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
 
+
 void UKP_PlayerUIWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
@@ -108,6 +109,7 @@ bool UKP_PlayerUIWidget::Initialize()
 		{
 			ManaComponent->OnManaChanged.AddUObject(this, &UKP_PlayerUIWidget::OnManaChanged);
 		}
+
 	return Super::Initialize();
 }
 

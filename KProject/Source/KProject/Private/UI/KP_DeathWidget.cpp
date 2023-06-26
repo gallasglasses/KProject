@@ -43,11 +43,11 @@ void UKP_DeathWidget::OnRestartGame() // for hard/master game difficulty
 	const auto KP_GameInstance = GetWorld()->GetGameInstance<UKP_GameInstance>();
 	if (!KP_GameInstance) return;
 
-	if (KP_GameInstance->GetStartupLevelName().IsNone())
+	if (KP_GameInstance->GetMainLevelName().IsNone())
 	{
 		UE_LOG(WBPDeathLog, Error, TEXT("Level name is NONE"));
 		return;
 	}
 
-	UGameplayStatics::OpenLevel(this, KP_GameInstance->GetStartupLevelName());
+	UGameplayStatics::OpenLevel(this, KP_GameInstance->GetMainLevelName());
 }

@@ -33,11 +33,11 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 		UTextBlock* NewGameText;
 
-	UPROPERTY(meta = (BindWidget))
+	/*UPROPERTY(meta = (BindWidget))
 		UButton* LoadSavedButton;
 
 	UPROPERTY(meta = (BindWidget))
-		UTextBlock* LoadSavedText;
+		UTextBlock* LoadSavedText;*/
 
 	UPROPERTY(meta = (BindWidget))
 		UButton* QuitButton;

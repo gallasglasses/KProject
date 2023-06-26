@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "KP_CoreTypes.h"
+#include "Engine/World.h"
 #include "KP_GameInstance.generated.h"
 
 class USoundCue;
@@ -17,16 +18,24 @@ class KPROJECT_API UKP_GameInstance : public UGameInstance
 
 public:
 
-	FName GetStartupLevelName() const { return StartupLevelName;}
-	FName GetMenuLevelName() const { return MenuLevelName;}
+	FName GetMainLevelName() const { return MainLevelName;};
+	TSoftObjectPtr<UWorld> GetLevel(EGameLevel NewLevel) const;
+	FName GetMenuLevelName() const { return MenuLevelName;};
+	FName GetLoadingLevelName() const { return LoadingLevelName;};
 
 protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Levels")
-	FName StartupLevelName = NAME_None;
+	FName MainLevelName = NAME_None;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Levels")
 	FName MenuLevelName = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Levels")
+	FName LoadingLevelName = NAME_None;
+
+	UPROPERTY(EditDefaultsOnly, Transient, BlueprintReadOnly, Category = "Levels")
+	TMap<EGameLevel, TSoftObjectPtr<UWorld>> Levels;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Sounds")
 	TMap<EGameLocation, USoundCue*> LocationMusic;

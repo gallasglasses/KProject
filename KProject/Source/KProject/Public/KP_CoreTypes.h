@@ -46,6 +46,23 @@ enum class EGameLocation : uint8
 	Sea
 };
 
+UENUM(BlueprintType)
+enum class EGameLevel : uint8
+{
+	MenuLevel,
+	LoadingLevel,
+	MainLevel,
+	LevelAA,
+	LevelAB,
+	LevelAC,
+	LevelBA,
+	LevelBB,
+	LevelBC,
+	LevelCA,
+	LevelCB,
+	LevelCC
+};
+
 //UENUM(BlueprintType)
 //enum class EGameLocalization : uint8
 //{

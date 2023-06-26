@@ -7,6 +7,7 @@
 #include "Player/KP_BaseCharacter.h"
 #include "QuestList.h"
 #include "KP_Utils.h"
+#include "Loading/KP_LoadingScreenWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogGameHUD, All, All);
 
@@ -22,6 +23,12 @@ UUserWidget* AKP_GameHUD::CreateWidgetByClass(const TSubclassOf<UUserWidget> Wid
 			QuestList->Init(KP_Utils::GetPlayerComponent<UQuestListComponent>(Player));
 		}
 		CurrentWidget->AddToViewport(ZOrder);
+		if (State == EGameWidgetState::WaitingToStart)
+		{
+			const auto LoadingWidget = Cast<UKP_LoadingScreenWidget>(CurrentWidget);
+			if (!LoadingWidget) return nullptr;
+			LoadingWidget->FadeInAnimation();
+		}
 	}
 	return CurrentWidget;
 }
@@ -30,10 +37,10 @@ void AKP_GameHUD::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TSubclassOf<UUserWidget>* GameWidgetClass = GameWidgets.Find(EGameWidgetState::InProgress);
+	TSubclassOf<UUserWidget>* GameWidgetClass = GameWidgets.Find(EGameWidgetState::WaitingToStart);
 	if (GameWidgetClass && *GameWidgetClass)
 	{
-		CreateWidgetByClass(*GameWidgetClass, EGameWidgetState::InProgress);
+		CreateWidgetByClass(*GameWidgetClass, EGameWidgetState::WaitingToStart);
 	}
 
 	if (GetWorld())

@@ -21,10 +21,14 @@ void AKProjectGameModeBase::StartPlay()
 {
 	Super::StartPlay();
 
+
+	TurnOnGlobalGravitySet(); //this is a temporary solution
+	SetGameState(EGameWidgetState::WaitingToStart);
+
 	//SpawnBots();
 
-	StartGame();
-	SetGameState(EGameWidgetState::InProgress);
+	/*StartGame();
+	SetGameState(EGameWidgetState::InProgress);*/
 }
 
 bool AKProjectGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
@@ -95,7 +99,7 @@ void AKProjectGameModeBase::GameOver()
 void AKProjectGameModeBase::StartGame()
 {
 	UE_LOG(KProjectGameModeBaseLog, Display, TEXT("************ START GAME ************"));
-
+	SetGameState(EGameWidgetState::InProgress);
 
 
 	// TODO: trigger for game over
@@ -112,9 +116,52 @@ void AKProjectGameModeBase::SetGameState(EGameWidgetState State)
 {
 	if (GameState == State) return;
 
+	if (GameState == EGameWidgetState::WaitingToStart && State == EGameWidgetState::InProgress)
+	{
+		//ResetPlayer(); //after restarted, bindings doesn't work, don't forget about it
+	}
+	if (State == EGameWidgetState::WaitingToStart)
+	{
+		TurnOnGlobalGravitySet(); //this is a temporary solution
+	}
+
 	GameState = State;
 	OnGameStateChanged.Broadcast(GameState);
-} 
+}
+
+void AKProjectGameModeBase::ResetPlayer()
+{
+	if (!GetWorld()) return;
+
+	for (auto It = GetWorld()->GetControllerIterator(); It; ++It)
+	{
+		if (It->Get() && It->Get()->GetPawn() && It->Get()->IsPlayerController())
+		{
+			It->Get()->GetPawn()->Reset();
+			RestartPlayer(It->Get());
+		}
+	}
+}
+
+void AKProjectGameModeBase::TurnOnGlobalGravitySet()
+{
+	if (!GetWorld()) return;
+
+	AWorldSettings* MyWorldSetting = GetWorld()->GetWorldSettings();
+	if (!MyWorldSetting) return;
+
+	MyWorldSetting->bGlobalGravitySet = true;
+}
+
+void AKProjectGameModeBase::TurnOffGlobalGravitySet()
+{
+	if (!GetWorld()) return;
+
+	AWorldSettings* MyWorldSetting = GetWorld()->GetWorldSettings();
+	if (!MyWorldSetting) return;
+
+	MyWorldSetting->bGlobalGravitySet = false;
+}
 
 //UClass* AKProjectGameModeBase::GetDefaultPawnClassForController_Implementation(AController* InController)
 //{

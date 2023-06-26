@@ -171,7 +171,7 @@ void AKP_BaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 bool AKP_BaseCharacter::IsRunning() const
 {
-	return bWantsToRun && !GetVelocity().IsZero();
+	return bIsRunning/*bWantsToRun && !GetVelocity().IsZero()*/;
 }
 
 bool AKP_BaseCharacter::IsAttacking() const
@@ -182,6 +182,11 @@ bool AKP_BaseCharacter::IsAttacking() const
 bool AKP_BaseCharacter::IsBlocking() const
 {
 	return bIsBlocking;
+}
+
+bool AKP_BaseCharacter::IsMoving() const
+{
+	return bIsMoving;
 }
 
 float AKP_BaseCharacter::GetMovementDirection() const
@@ -264,31 +269,55 @@ void AKP_BaseCharacter::CheckCameraOverlap()
 void AKP_BaseCharacter::MoveForward(float Amount)
 {
 	bIsMoving = Amount != 0.f;
+
+	if (bWantsToRun && bIsMoving && !bIsRunning)
+	{
+		bIsRunning = true;
+		OnGiveAnyStamina.Broadcast(true);
+	}
+	if (bIsMoving && !bWantsToRun)
+	{
+		bIsRunning = false;
+		//OnGiveAnyStamina.Broadcast(false);
+	}
+	if (!bIsMoving)
+	{
+		if (bWantsToRun)
+		{
+			bIsRunning = false;
+			OnGiveAnyStamina.Broadcast(false);
+		}
+	}
+
 	if (Amount == 0.f) return;
+	
 	AddMovementInput(GetActorForwardVector(), Amount);
 }
 
 void AKP_BaseCharacter::MoveRight(float Amount)
 {
+	bIsMoving = Amount != 0.f;
+
 	if (Amount == 0.f) return;
+
 	AddMovementInput(GetActorRightVector(), Amount);
 }
 
 void AKP_BaseCharacter::OnStartRunning()
 {
 	bWantsToRun = true;
-	bIsRunning = true;
-	if (bIsMoving)
+	//bIsRunning = true;
+	/*if (bIsMoving)
 	{
-		OnGiveAnyStamina.Broadcast(bIsRunning);
-	}
+		OnGiveAnyStamina.Broadcast(true);
+	}*/
 }
 
 void AKP_BaseCharacter::OnStopRunning()
 {
 	bWantsToRun = false;
 	bIsRunning = false;
-	OnGiveAnyStamina.Broadcast(bIsRunning);
+	OnGiveAnyStamina.Broadcast(false);
 }
 
 void AKP_BaseCharacter::Block()
@@ -313,16 +342,17 @@ void AKP_BaseCharacter::OnDeath()
 	UE_LOG(BaseCharacterLog, Display, TEXT("%s, You are dead"), *GetName());
 	PlayAnimMontage(DeathAnimMontage);
 	GetCharacterMovement()->DisableMovement();
-	//SetLifeSpan(DeathAnimMontage->CalculateSequenceLength() + 1.f); // TODO: Maybe not destroy actor, do longer death scene
+	bIsAttacking = false;
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	SetLifeSpan(DeathAnimMontage->CalculateSequenceLength() + 1.f); // TODO: Maybe not destroy the actor right away, do longer death scene
 
-	/*if (Controller)
+	if (Controller)
 	{
 		Controller->ChangeState(NAME_Spectating);
-	}*/
+	}
 
-	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	bIsAttacking = false;
 	GetWorld()->GetTimerManager().SetTimer(DeadTimerHandle, this, &AKP_BaseCharacter::Dead, DeathAnimMontage->CalculateSequenceLength(), false);
+
 }
 
 void AKP_BaseCharacter::Dead()

@@ -45,6 +45,7 @@ void AKP_PlayerController::BeginPlay()
 		const auto PlayerPawn = Cast<AKP_BaseCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 		if (PlayerPawn)
 		{
+			UE_LOG(KP_PlayerControllerLog, Display, TEXT("OnDead.AddUObject this, &AKP_PlayerController::OnDead"));
 			PlayerPawn->OnDead.AddUObject(this, &AKP_PlayerController::OnDead);
 		}
 	}

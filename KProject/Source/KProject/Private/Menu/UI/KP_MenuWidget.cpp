@@ -25,10 +25,10 @@ void UKP_MenuWidget::NativeOnInitialized()
 		NewGameButton->OnClicked.AddDynamic(this, &UKP_MenuWidget::OnStartNewGame);
 	}
 
-	if (LoadSavedButton)
+	/*if (LoadSavedButton)
 	{
 		LoadSavedButton->OnClicked.AddDynamic(this, &UKP_MenuWidget::OnLoadSaved);
-	}
+	}*/
 
 	if (QuitButton)
 	{
@@ -44,13 +44,13 @@ void UKP_MenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation* 
 	const auto KP_GameInstance = GetWorld()->GetGameInstance<UKP_GameInstance>();
 	if (!KP_GameInstance) return;
 
-	if (KP_GameInstance->GetStartupLevelName().IsNone())
+	if (KP_GameInstance->GetLevel(EGameLevel::MainLevel).IsNull())
 	{
 		UE_LOG(WBPMenuLog, Error, TEXT("Level name is NONE"));
 		return;
 	}
 
-	UGameplayStatics::OpenLevel(this, KP_GameInstance->GetStartupLevelName());
+	UGameplayStatics::OpenLevel(this, FName(KP_GameInstance->GetLevel(EGameLevel::MainLevel).ToSoftObjectPath().GetAssetName())); //this, KP_GameInstance->GetMainLevelName()
 }
 
 void UKP_MenuWidget::OnStartNewGame()
