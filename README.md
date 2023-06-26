@@ -1,6 +1,8 @@
 # KProject
 Demo-Prototype of fantasy action role-playing game
 
+[![SomeShooterProject](https://img.youtube.com/vi/K21N9f2PuE0/0.jpg)](https://youtu.be/K21N9f2PuE0)
+
 ____
 ### I. Description of the game world
 
